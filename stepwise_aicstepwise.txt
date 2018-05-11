@@ -1,0 +1,22 @@
+
+Call:  glm(formula = log10_salary ~ sq_rank + sq_gs + YDS + INT + nl_fum)
+
+Coefficients:
+(Intercept)      sq_rank        sq_gs          YDS          INT       nl_fum  
+  5.9747387   -0.0378118    0.1510613    0.0001764   -0.0254274    0.0537115  
+
+Degrees of Freedom: 387 Total (i.e. Null);  382 Residual
+  (151 observations deleted due to missingness)
+Null Deviance:	    146.4 
+Residual Deviance: 77.13 	AIC: 488.3
+
+Call:  glm(formula = log10_salary ~ sq_rank + sq_gs + YDS + INT + nl_fum)
+
+Coefficients:
+(Intercept)      sq_rank        sq_gs          YDS          INT       nl_fum  
+  5.9747387   -0.0378118    0.1510613    0.0001764   -0.0254274    0.0537115  
+
+Degrees of Freedom: 387 Total (i.e. Null);  382 Residual
+  (151 observations deleted due to missingness)
+Null Deviance:	    146.4 
+Residual Deviance: 77.13 	AIC: 488.3
