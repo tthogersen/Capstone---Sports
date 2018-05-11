@@ -40,12 +40,10 @@ names(OffNFLSalary)
 
 ## Salary Dependent Variable
 
-log2_salary = log2((Salary))
+log10_salary = log10((Salary))
 
 
-hist(log2_salary,
-     #xlim = c(10, 18),
-     #ylim = c(0, 150),
+hist(log10_salary,
      xlab = "Normalized NFL Salary $ million",
      main = "Historam of NFL Salary
      ",
@@ -234,7 +232,7 @@ Norm_OFF_Salary = data.frame(
     Player,
     POS,
     sq_rank,
-    log2_salary,
+    log10_salary,
     sq_gp,
     sq_gs,
     sq_snaps,
@@ -276,6 +274,91 @@ scatterplotMatrix(
   data = Norm_OFF_Salary,
   main = "NFL Offensive Salary"
 )
+
+install.packages("PerformanceAnalytics")
+library("PerformanceAnalytics")
+chart.Correlation(Norm_OFF_Salary, histogram = TRUE, pch = 19)
+
+
+# Setting up GLM for initial modeling
+## Generalized linear models are fit using the glm( ) function. The form of the glm function is
+###glm(formula, family=familytype(link=linkfunction), data=)
+
+
+# getting the names of all variables
+names(Norm_OFF_Salary)
+
+# Creating GLM
+
+# Check Cor matrix for collinearity and correlation
+sink(
+  "School/DA 485/NFLOffSalary_Cor.txt",
+  type = "output",
+  append = FALSE,
+  split = TRUE
+)
+print(NFLOffSalary_Cor)
+sink()
+
+
+# choose the following variables due to least amount of collinearity form the correlation matrix
+## Created GLM Model
+fit_Off_NFL_Salary = glm(log10_salary ~ Player + POS + sq_rank+
+                           YDS + YDS.ATT + INT + nl_td + nl_fum, data = Norm_OFF_Salary)
+sink(
+  "School/DA 485/GLM_Summary_AOV.txt",
+  type = "output",
+  append = FALSE,
+  split = TRUE
+)
+print(summary(fit_Off_NFL_Salary))
+print(anova(fit_Off_NFL_Salary))
+print(Confint(fit_Off_NFL_Salary))
+print(exp(coef(fit_Off_NFL_Salary)))
+print(confint(fit_Off_NFL_Salary))
+
+sink()
+
+# Stepwise Regression for NFL Salary information
+
+library(MASS)
+
+# AIC Stepwise - Both
+aic_both_nfl_Salary = stepAIC(fit_Off_NFL_Salary, direction = "both")
+
+
+# stepwise - both
+step_both_nfl_Salary = step(fit_Off_NFL_Salary, direction = "both")
+
+#output: for stepwise step and AIC
+
+sink(
+  "School/DA 485/stepwise_aicstepwise.txt",
+  type = "output",
+  append = FALSE,
+  split = TRUE
+)
+print(step_both_nfl_Salary)
+print(aic_both_nfl_Salary)
+sink()
+
+# new GLM Data model with stepwise/aic output
+
+fit2_Off_NFL_Salary = glm(log10_salary ~ sq_rank+
+                           YDS + YDS.ATT + INT + nl_td, data = Norm_OFF_Salary)
+sink(
+  "School/DA 485/mod2_GLM_Summary_AOV.txt",
+  type = "output",
+  append = FALSE,
+  split = TRUE
+)
+print(summary(fit2_Off_NFL_Salary))
+print(anova(fit2_Off_NFL_Salary, test = "Chisq"))
+print(Confint(fit2_Off_NFL_Salary))
+print(exp(coef(fit2_Off_NFL_Salary)))
+print(confint(fit2_Off_NFL_Salary))
+
+sink()
 
 
 
