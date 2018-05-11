@@ -248,10 +248,9 @@ Norm_OFF_Salary = data.frame(
   )
 )
 
-
-
-
 cor(Norm_OFF_Salary)
+
+Norm_OffSalaryCor = cor(data.frame(Norm_OFF_Salary[sapply(Norm_OFF_Salary, is.numeric)]))
 
 # removed NA value in INT column
 
@@ -359,6 +358,74 @@ print(exp(coef(fit2_Off_NFL_Salary)))
 print(confint(fit2_Off_NFL_Salary))
 
 sink()
+
+
+# Cluster Analysis
+
+## Data Prep mydata <- na.omit(mydata) # listwise deletion of missing
+
+Norm2_OFF_Salary <-  na.omit(Norm_OFF_Salary) # listwise deletion of missing
+
+## Partitioning using K-means
+
+# Determine number of clusters
+
+wss <-
+  (nrow(Norm2_OFF_Salary) - 1) * sum(apply(Norm2_OFF_Salary, 2, var))
+for (i in 2:16)
+  wss[i] <- sum(kmeans(Norm2_OFF_Salary,
+                       centers = i)$withinss)
+
+plot(1:16,
+     wss,
+     type = "b",
+     xlab = "Number of Clusters",
+     ylab = "Within groups sum of squares")
+sink(
+  "School/DA 485/clusterAnalysis.txt",
+  type = "output",
+  append = FALSE,
+  split = TRUE
+)
+
+Norm2_OFF_Salary <-  na.omit(Norm2_OFF_Salary)
+
+# K-Means Cluster Analysis
+print(fit <- kmeans(Norm2_OFF_Salary, 5)) # 5 cluster solution
+
+# get cluster means
+print(aggregate(Norm2_OFF_Salary, by = list(fit$cluster), FUN = mean))
+
+# append cluster assignment
+print(mydata <- data.frame(Norm2_OFF_Salary, fit$cluster))
+sink()
+
+# Plotting Cluster Solutions 
+
+# K-Means Clustering with 5 clusters
+fit <- kmeans(Norm2_OFF_Salary, 5)
+
+# Cluster Plot against 1st 2 principal components
+
+# vary parameters for most readable graph
+library(cluster)
+clusplot(Norm2_OFF_Salary, fit$cluster, color=TRUE, shade=TRUE,
+         labels=2, lines=0)
+
+# Centroid Plot against 1st 2 discriminant functions
+library(fpc)
+plotcluster(Norm2_OFF_Salary, fit$cluster)
+
+
+
+
+
+                     
+
+
+
+
+
 
 
 
