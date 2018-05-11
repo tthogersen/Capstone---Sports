@@ -1,66 +1,31 @@
 
 Call:
-glm(formula = log10_salary ~ Player + POS + sq_rank + sq_gs + 
-    YDS + YDS.ATT + INT + nl_td + nl_fum)
+glm(formula = log10_salary ~ Player + POS + sq_rank + YDS + YDS.ATT + 
+    INT + nl_td + nl_fum, data = Norm_OFF_Salary)
 
 Deviance Residuals: 
-     Min        1Q    Median        3Q       Max  
--1.20951  -0.26885   0.02145   0.29304   1.20951  
+    Min       1Q   Median       3Q      Max  
+-1.4174  -0.2882   0.0239   0.2731   1.5344  
 
 Coefficients:
               Estimate Std. Error t value Pr(>|t|)    
-(Intercept)  5.966e+00  1.600e-01  37.275  < 2e-16 ***
-Player      -1.448e-04  1.484e-04  -0.976   0.3298    
-POS         -2.801e-02  4.019e-02  -0.697   0.4862    
-sq_rank     -2.642e-02  1.670e-02  -1.582   0.1144    
-sq_gs        1.513e-01  3.044e-02   4.970 1.02e-06 ***
-YDS          1.464e-04  7.526e-05   1.945   0.0526 .  
-YDS.ATT      4.145e-03  5.962e-03   0.695   0.4874    
-INT         -3.077e-02  1.839e-02  -1.673   0.0951 .  
-nl_td        4.300e-02  4.302e-02   0.999   0.3182    
-nl_fum       5.084e-02  3.699e-02   1.374   0.1701    
+(Intercept)  6.239e+00  1.172e-01  53.231  < 2e-16 ***
+Player      -6.009e-05  1.240e-04  -0.485  0.62817    
+POS          1.945e-02  2.136e-02   0.911  0.36273    
+sq_rank     -6.464e-02  1.016e-02  -6.363 4.27e-10 ***
+YDS          1.275e-04  6.377e-05   1.999  0.04616 *  
+YDS.ATT      9.758e-03  4.838e-03   2.017  0.04421 *  
+INT         -1.686e-02  1.420e-02  -1.187  0.23574    
+nl_td        8.797e-02  3.256e-02   2.702  0.00711 ** 
+nl_fum       4.090e-02  3.150e-02   1.298  0.19480    
 ---
 Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
 
-(Dispersion parameter for gaussian family taken to be 0.2025673)
+(Dispersion parameter for gaussian family taken to be 0.1988641)
 
-    Null deviance: 146.42  on 387  degrees of freedom
-Residual deviance:  76.57  on 378  degrees of freedom
-  (151 observations deleted due to missingness)
-AIC: 493.45
-
-Number of Fisher Scoring iterations: 2
-
-
-Call:
-glm(formula = log10_salary ~ Player + POS + sq_rank + sq_gs + 
-    YDS + YDS.ATT + INT + nl_td + nl_fum)
-
-Deviance Residuals: 
-     Min        1Q    Median        3Q       Max  
--1.20951  -0.26885   0.02145   0.29304   1.20951  
-
-Coefficients:
-              Estimate Std. Error t value Pr(>|t|)    
-(Intercept)  5.966e+00  1.600e-01  37.275  < 2e-16 ***
-Player      -1.448e-04  1.484e-04  -0.976   0.3298    
-POS         -2.801e-02  4.019e-02  -0.697   0.4862    
-sq_rank     -2.642e-02  1.670e-02  -1.582   0.1144    
-sq_gs        1.513e-01  3.044e-02   4.970 1.02e-06 ***
-YDS          1.464e-04  7.526e-05   1.945   0.0526 .  
-YDS.ATT      4.145e-03  5.962e-03   0.695   0.4874    
-INT         -3.077e-02  1.839e-02  -1.673   0.0951 .  
-nl_td        4.300e-02  4.302e-02   0.999   0.3182    
-nl_fum       5.084e-02  3.699e-02   1.374   0.1701    
----
-Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
-
-(Dispersion parameter for gaussian family taken to be 0.2025673)
-
-    Null deviance: 146.42  on 387  degrees of freedom
-Residual deviance:  76.57  on 378  degrees of freedom
-  (151 observations deleted due to missingness)
-AIC: 493.45
+    Null deviance: 183.94  on 538  degrees of freedom
+Residual deviance: 105.40  on 530  degrees of freedom
+AIC: 669.98
 
 Number of Fisher Scoring iterations: 2
 
@@ -74,37 +39,34 @@ Terms added sequentially (first to last)
 
 
         Df Deviance Resid. Df Resid. Dev
-NULL                      387    146.425
-Player   1    0.128       386    146.297
-POS      1    6.396       385    139.901
-sq_rank  1   50.054       384     89.847
-sq_gs    1    9.484       383     80.364
-YDS      1    2.637       382     77.726
-YDS.ATT  1    0.139       381     77.588
-INT      1    0.393       380     77.195
-nl_td    1    0.242       379     76.953
-nl_fum   1    0.383       378     76.570
-                 Estimate         2.5 %       97.5 %
-(Intercept)  5.9656049371  5.651928e+00 6.2792816047
-Player      -0.0001448027 -4.356339e-04 0.0001460285
-POS         -0.0280122015 -1.067787e-01 0.0507542920
-sq_rank     -0.0264239413 -5.915161e-02 0.0063037262
-sq_gs        0.1512698775  9.161155e-02 0.2109282024
-YDS          0.0001463676 -1.148674e-06 0.0002938838
-YDS.ATT      0.0041449528 -7.541293e-03 0.0158311982
-INT         -0.0307720313 -6.682076e-02 0.0052766969
-nl_td        0.0429990081 -4.132120e-02 0.1273192171
-nl_fum       0.0508392403 -2.166085e-02 0.1233393265
-(Intercept)      Player         POS     sq_rank       sq_gs         YDS     YDS.ATT         INT       nl_td      nl_fum 
-389.7887544   0.9998552   0.9723765   0.9739221   1.1633106   1.0001464   1.0041536   0.9696966   1.0439369   1.0521537 
-                    2.5 %       97.5 %
-(Intercept)  5.651928e+00 6.2792816047
-Player      -4.356339e-04 0.0001460285
-POS         -1.067787e-01 0.0507542920
-sq_rank     -5.915161e-02 0.0063037262
-sq_gs        9.161155e-02 0.2109282024
-YDS         -1.148674e-06 0.0002938838
-YDS.ATT     -7.541293e-03 0.0158311982
-INT         -6.682076e-02 0.0052766969
-nl_td       -4.132120e-02 0.1273192171
-nl_fum      -2.166085e-02 0.1233393265
+NULL                      538     183.94
+Player   1    0.106       537     183.83
+POS      1    0.621       536     183.21
+sq_rank  1   67.143       535     116.07
+YDS      1    7.278       534     108.79
+YDS.ATT  1    1.612       533     107.18
+INT      1    0.042       532     107.14
+nl_td    1    1.405       531     105.73
+nl_fum   1    0.335       530     105.40
+                 Estimate         2.5 %        97.5 %
+(Intercept)  6.239378e+00  6.009646e+00  6.4691095572
+Player      -6.008696e-05 -3.031168e-04  0.0001829429
+POS          1.945348e-02 -2.240160e-02  0.0613085619
+sq_rank     -6.464314e-02 -8.455371e-02 -0.0447325724
+YDS          1.274491e-04  2.466796e-06  0.0002524314
+YDS.ATT      9.757985e-03  2.755320e-04  0.0192404376
+INT         -1.685974e-02 -4.469717e-02  0.0109776864
+nl_td        8.797293e-02  2.416059e-02  0.1517852642
+nl_fum       4.089565e-02 -2.084953e-02  0.1026408175
+(Intercept)      Player         POS     sq_rank         YDS     YDS.ATT         INT       nl_td      nl_fum 
+512.5394558   0.9999399   1.0196439   0.9374019   1.0001275   1.0098057   0.9832816   1.0919586   1.0417434 
+                    2.5 %        97.5 %
+(Intercept)  6.009646e+00  6.4691095572
+Player      -3.031168e-04  0.0001829429
+POS         -2.240160e-02  0.0613085619
+sq_rank     -8.455371e-02 -0.0447325724
+YDS          2.466796e-06  0.0002524314
+YDS.ATT      2.755320e-04  0.0192404376
+INT         -4.469717e-02  0.0109776864
+nl_td        2.416059e-02  0.1517852642
+nl_fum      -2.084953e-02  0.1026408175
