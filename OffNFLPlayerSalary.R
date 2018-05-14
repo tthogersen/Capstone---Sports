@@ -1,5 +1,16 @@
 # Imported dataset from excel#
 
+# Packages:
+
+library(car)
+library(lattice)
+install.packages("PerformanceAnalytics")
+library("PerformanceAnalytics")
+library(MASS)
+library(cluster)
+library(fpc)
+
+
 library(readxl)
 OffNFLSalary <-
   read_excel("School/DA 485/NFLSalaryOff.xlsx",
@@ -23,8 +34,7 @@ OFFSalaryCor
 # Scatterplot Matrices from the car Package
 
 
-library(car)
-library(lattice)
+
 
 # Basic Scatterplot Matrix
 pairs(
@@ -202,6 +212,9 @@ hist(
   col = "blue"
 )
 
+INT[is.na(INT)] = 0
+
+
 ## FUM (Fumbles) - Independant Variable
 
 names(OffNFLSalary)
@@ -229,9 +242,6 @@ summary(Norm_OFF_Salary)
 
 Norm_OFF_Salary = data.frame(
   cbind(
-    Player,
-    POS,
-    sq_rank,
     log10_salary,
     sq_gp,
     sq_gs,
@@ -250,7 +260,6 @@ Norm_OFF_Salary = data.frame(
 
 cor(Norm_OFF_Salary)
 
-Norm_OffSalaryCor = cor(data.frame(Norm_OFF_Salary[sapply(Norm_OFF_Salary, is.numeric)]))
 
 # removed NA value in INT column
 
@@ -267,15 +276,17 @@ NFLOffSalary_Cor
 
 library(car)
 scatterplotMatrix(
-  ~ Player + POS + sq_rank + log2_salary + sq_gp + sq_gs + sq_snaps + sq_snaps_per +
+  ~sq_rank + log2_salary + sq_gp + sq_gs + sq_snaps + sq_snaps_per +
     nl_plays + nl_plays_comp +
     Comp_Percent + YDS + YDS.ATT + nl_td + INT + nl_fum,
   data = Norm_OFF_Salary,
   main = "NFL Offensive Salary"
 )
 
-install.packages("PerformanceAnalytics")
+#install.packages("PerformanceAnalytics")
 library("PerformanceAnalytics")
+Norm_OFF_Salary[is.na(Norm_OFF_Salary)] = 0
+
 chart.Correlation(Norm_OFF_Salary, histogram = TRUE, pch = 19)
 
 
@@ -302,8 +313,9 @@ sink()
 
 # choose the following variables due to least amount of collinearity form the correlation matrix
 ## Created GLM Model
-fit_Off_NFL_Salary = glm(log10_salary ~ Player + POS + sq_rank+
-                           YDS + YDS.ATT + INT + nl_td + nl_fum, data = Norm_OFF_Salary)
+fit_Off_NFL_Salary = glm(log10_salary ~sq_rank +
+                           YDS + YDS.ATT + INT + nl_td + nl_fum,
+                         data = Norm_OFF_Salary)
 sink(
   "School/DA 485/GLM_Summary_AOV.txt",
   type = "output",
@@ -343,8 +355,8 @@ sink()
 
 # new GLM Data model with stepwise/aic output
 
-fit2_Off_NFL_Salary = glm(log10_salary ~ sq_rank+
-                           YDS + YDS.ATT + INT + nl_td, data = Norm_OFF_Salary)
+fit2_Off_NFL_Salary = glm(log10_salary ~ sq_rank +
+                            YDS + YDS.ATT + INT + nl_td, data = Norm_OFF_Salary)
 sink(
   "School/DA 485/mod2_GLM_Summary_AOV.txt",
   type = "output",
@@ -364,7 +376,9 @@ sink()
 
 ## Data Prep mydata <- na.omit(mydata) # listwise deletion of missing
 
-Norm2_OFF_Salary <-  na.omit(Norm_OFF_Salary) # listwise deletion of missing
+Norm2_OFF_Salary <-  na.omit(Norm_OFF_Salary)# listwise deletion of missing
+
+
 
 ## Partitioning using K-means
 
@@ -372,11 +386,11 @@ Norm2_OFF_Salary <-  na.omit(Norm_OFF_Salary) # listwise deletion of missing
 
 wss <-
   (nrow(Norm2_OFF_Salary) - 1) * sum(apply(Norm2_OFF_Salary, 2, var))
-for (i in 2:16)
+for (i in 1:15)
   wss[i] <- sum(kmeans(Norm2_OFF_Salary,
                        centers = i)$withinss)
 
-plot(1:16,
+plot(1:15,
      wss,
      type = "b",
      xlab = "Number of Clusters",
@@ -391,8 +405,7 @@ sink(
 Norm2_OFF_Salary <-  na.omit(Norm2_OFF_Salary)
 
 # K-Means Cluster Analysis
-print(fit <- kmeans(Norm2_OFF_Salary, 5)) # 5 cluster solution
-
+plot(fit) # plot results 
 # get cluster means
 print(aggregate(Norm2_OFF_Salary, by = list(fit$cluster), FUN = mean))
 
@@ -400,7 +413,7 @@ print(aggregate(Norm2_OFF_Salary, by = list(fit$cluster), FUN = mean))
 print(mydata <- data.frame(Norm2_OFF_Salary, fit$cluster))
 sink()
 
-# Plotting Cluster Solutions 
+# Plotting Cluster Solutions
 
 # K-Means Clustering with 5 clusters
 fit <- kmeans(Norm2_OFF_Salary, 5)
@@ -409,22 +422,44 @@ fit <- kmeans(Norm2_OFF_Salary, 5)
 
 # vary parameters for most readable graph
 library(cluster)
-clusplot(Norm2_OFF_Salary, fit$cluster, color=TRUE, shade=TRUE,
-         labels=2, lines=0)
+clusplot(
+  Norm2_OFF_Salary,
+  fit$cluster,
+  color = TRUE,
+  shade = TRUE,
+  labels = 2,
+  lines = 0
+)
 
 # Centroid Plot against 1st 2 discriminant functions
 library(fpc)
-plotcluster(Norm2_OFF_Salary, fit$cluster)
+plotcluster(fit, fit$cluster)
 
 
+# Ward Hierarchical Clustering
+
+d <- dist(Norm2_OFF_Salary, method = "maximum") # distance matrix
+fit <- hclust(d, method="ward")
+plot(fit) # display dendogram
+groups <- cutree(fit, k=5) # cut tree into 5 clusters
+
+# draw dendogram with red borders around the 5 clusters
+
+rect.hclust(fit, k=5, border="red")
 
 
+# Model Based Clustering
+install.packages("mclust")
+library(mclust)
+Norm2_OFF_Salary <-  na.omit(Norm2_OFF_Salary)
+fit <- Mclust(Norm2_OFF_Salary)
+plot(fit)
+summary(fit) # display the best model 
 
-                     
+# Subsetting data into 2 different position groups QB and WR
 
 
-
-
+head()
 
 
 
