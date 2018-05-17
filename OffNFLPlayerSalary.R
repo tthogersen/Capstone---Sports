@@ -4,11 +4,13 @@
 
 library(car)
 library(lattice)
-install.packages("PerformanceAnalytics")
+#install.packages("PerformanceAnalytics")
 library("PerformanceAnalytics")
 library(MASS)
 library(cluster)
 library(fpc)
+#install.packages("ResourceSelection") # enable Hosmer and Lemeshow goodness of fit (GOF) test
+library(ResourceSelection)
 
 
 library(readxl)
@@ -17,6 +19,8 @@ OffNFLSalary <-
              sheet = "2017OffensivePlayerSalary_New",
              na.rm = TRUE)
 View(OffNFLSalary)
+
+INT[is.na(INT)] = 0
 
 
 
@@ -28,8 +32,10 @@ head(OffNFLSalary)
 
 # Correlation
 
+INT[is.na(INT)] = 0
 OFFSalaryCor = cor(data.frame(OffNFLSalary[sapply(OffNFLSalary, is.numeric)]))
 OFFSalaryCor
+
 
 # Scatterplot Matrices from the car Package
 
@@ -174,7 +180,7 @@ hist(
   col = "blue"
 )
 
-## YDS.ATT (YDS/ATT) - Independant Variable
+## YDS.ATT (YDS/AT1T) - Independant Variable
 
 names(OffNFLSalary)
 
@@ -290,15 +296,15 @@ Norm_OFF_Salary[is.na(Norm_OFF_Salary)] = 0
 chart.Correlation(Norm_OFF_Salary, histogram = TRUE, pch = 19)
 
 
-# Setting up GLM for initial modeling
-## Generalized linear models are fit using the glm( ) function. The form of the glm function is
-###glm(formula, family=familytype(link=linkfunction), data=)
+# Setting up lm for initial modeling
+## Generalized linear models are fit using the lm( ) function. The form of the lm function is
+###lm(formula, family=familytype(link=linkfunction), data=)
 
 
 # getting the names of all variables
 names(Norm_OFF_Salary)
 
-# Creating GLM
+# Creating lm
 
 # Check Cor matrix for collinearity and correlation
 sink(
@@ -312,12 +318,12 @@ sink()
 
 
 # choose the following variables due to least amount of collinearity form the correlation matrix
-## Created GLM Model
-fit_Off_NFL_Salary = glm(log10_salary ~sq_rank +
+## Created lm Model
+fit_Off_NFL_Salary = lm(log10_salary ~sq_rank +
                            YDS + YDS.ATT + INT + nl_td + nl_fum,
                          data = Norm_OFF_Salary)
 sink(
-  "School/DA 485/GLM_Summary_AOV.txt",
+  "School/DA 485/lm_Summary_AOV.txt",
   type = "output",
   append = FALSE,
   split = TRUE
@@ -332,7 +338,6 @@ sink()
 
 # Stepwise Regression for NFL Salary information
 
-library(MASS)
 
 # AIC Stepwise - Both
 aic_both_nfl_Salary = stepAIC(fit_Off_NFL_Salary, direction = "both")
@@ -353,12 +358,15 @@ print(step_both_nfl_Salary)
 print(aic_both_nfl_Salary)
 sink()
 
-# new GLM Data model with stepwise/aic output
+# new lm Data model with stepwise/aic output
 
-fit2_Off_NFL_Salary = glm(log10_salary ~ sq_rank +
-                            YDS + YDS.ATT + INT + nl_td, data = Norm_OFF_Salary)
+fit2_Off_NFL_Salary = lm(log10_salary ~ sq_rank +
+                            YDS + YDS.ATT + INT + nl_td, data = Norm_OFF_Salary, family = gaussian)
+
+lm_Off_NFL_Salary = lm(log10_salary ~ sq_rank +
+                            YDS + YDS.ATT + INT +nl_td,data = Norm_OFF_Salary)
 sink(
-  "School/DA 485/mod2_GLM_Summary_AOV.txt",
+  "School/DA 485/mod2_lm_Summary_AOV.txt",
   type = "output",
   append = FALSE,
   split = TRUE
@@ -431,11 +439,6 @@ clusplot(
   lines = 0
 )
 
-# Centroid Plot against 1st 2 discriminant functions
-library(fpc)
-plotcluster(fit, fit$cluster)
-
-
 # Ward Hierarchical Clustering
 
 d <- dist(Norm2_OFF_Salary, method = "maximum") # distance matrix
@@ -453,19 +456,8 @@ install.packages("mclust")
 library(mclust)
 Norm2_OFF_Salary <-  na.omit(Norm2_OFF_Salary)
 fit <- Mclust(Norm2_OFF_Salary)
-plot(fit)
 summary(fit) # display the best model 
 
 # Subsetting data into 2 different position groups QB and WR
-
-
-head()
-
-
-
-
-
-
-
 
 
