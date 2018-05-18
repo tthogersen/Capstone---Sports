@@ -1,0 +1,787 @@
+
+#
+Call:
+glm(formula = log10_salary ~ sq_gp + sq_gs + sq_snaps + sq_snaps_per + 
+    nl_plays + nl_plays_comp + Comp_Percent + YDS + YDS.ATT + 
+    nl_td + INT + nl_fum, data = QB_Data)
+
+Deviance Residuals: 
+    Min       1Q   Median       3Q      Max  
+-34.075   -7.783    0.615    8.943   33.852  
+
+Coefficients:
+              Estimate Std. Error t value Pr(>|t|)  
+(Intercept)   11.55731    6.53434   1.769   0.0823 .
+sq_gp         -1.12546    0.99117  -1.135   0.2609  
+sq_gs          2.81374    1.22541   2.296   0.0254 *
+sq_snaps       0.25231    0.12974   1.945   0.0568 .
+sq_snaps_per  -0.41618    0.24883  -1.673   0.0999 .
+nl_plays      -0.29650    0.14036  -2.112   0.0390 *
+nl_plays_comp  0.26814    0.13576   1.975   0.0531 .
+Comp_Percent   0.02289    0.11921   0.192   0.8484  
+YDS            0.09003    0.11389   0.791   0.4325  
+YDS.ATT        0.15992    0.14197   1.126   0.2647  
+nl_td          0.87008    0.56606   1.537   0.1298  
+INT           -0.29817    0.39796  -0.749   0.4568  
+nl_fum         0.57175    0.69892   0.818   0.4167  
+---
+Signif. codes:  0 �***� 0.001 �**� 0.01 �*� 0.05 �.� 0.1 � � 1
+
+(Dispersion parameter for gaussian family taken to be 188.543)
+
+    Null deviance: 25449  on 69  degrees of freedom
+Residual deviance: 10747  on 57  degrees of freedom
+AIC: 579.02
+
+Number of Fisher Scoring iterations: 2
+
+
+Call:
+lm(formula = log10_salary ~ sq_gp + sq_gs + sq_snaps + sq_snaps_per + 
+    nl_plays + nl_plays_comp + Comp_Percent + YDS + YDS.ATT + 
+    nl_td + INT + nl_fum, data = QB_Data)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-34.075  -7.783   0.615   8.943  33.852 
+
+Coefficients:
+              Estimate Std. Error t value Pr(>|t|)  
+(Intercept)   11.55731    6.53434   1.769   0.0823 .
+sq_gp         -1.12546    0.99117  -1.135   0.2609  
+sq_gs          2.81374    1.22541   2.296   0.0254 *
+sq_snaps       0.25231    0.12974   1.945   0.0568 .
+sq_snaps_per  -0.41618    0.24883  -1.673   0.0999 .
+nl_plays      -0.29650    0.14036  -2.112   0.0390 *
+nl_plays_comp  0.26814    0.13576   1.975   0.0531 .
+Comp_Percent   0.02289    0.11921   0.192   0.8484  
+YDS            0.09003    0.11389   0.791   0.4325  
+YDS.ATT        0.15992    0.14197   1.126   0.2647  
+nl_td          0.87008    0.56606   1.537   0.1298  
+INT           -0.29817    0.39796  -0.749   0.4568  
+nl_fum         0.57175    0.69892   0.818   0.4167  
+---
+Signif. codes:  0 �***� 0.001 �**� 0.01 �*� 0.05 �.� 0.1 � � 1
+
+Residual standard error: 13.73 on 57 degrees of freedom
+Multiple R-squared:  0.5777,	Adjusted R-squared:  0.4888 
+F-statistic: 6.498 on 12 and 57 DF,  p-value: 4.02e-07
+
+
+Start:  AIC=579.02
+log10_salary ~ sq_gp + sq_gs + sq_snaps + sq_snaps_per + nl_plays + 
+    nl_plays_comp + Comp_Percent + YDS + YDS.ATT + nl_td + INT + 
+    nl_fum
+
+                Df Deviance    AIC
+- Comp_Percent   1    10754 577.07
+- INT            1    10853 577.71
+- YDS            1    10865 577.79
+- nl_fum         1    10873 577.84
+- YDS.ATT        1    10986 578.56
+- sq_gp          1    10990 578.59
+<none>                10747 579.02
+- nl_td          1    11192 579.87
+- sq_snaps_per   1    11274 580.38
+- sq_snaps       1    11460 581.52
+- nl_plays_comp  1    11482 581.66
+- nl_plays       1    11588 582.30
+- sq_gs          1    11741 583.22
+
+Step:  AIC=577.07
+log10_salary ~ sq_gp + sq_gs + sq_snaps + sq_snaps_per + nl_plays + 
+    nl_plays_comp + YDS + YDS.ATT + nl_td + INT + nl_fum
+
+                Df Deviance    AIC
+- INT            1    10871 575.83
+- nl_fum         1    10874 575.84
+- YDS            1    10874 575.85
+- sq_gp          1    10999 576.64
+<none>                10754 577.07
+- YDS.ATT        1    11105 577.31
+- nl_td          1    11198 577.90
+- sq_snaps_per   1    11278 578.40
++ Comp_Percent   1    10747 579.02
+- sq_snaps       1    11471 579.59
+- nl_plays_comp  1    11531 579.95
+- nl_plays       1    11593 580.33
+- sq_gs          1    11773 581.41
+
+Step:  AIC=575.83
+log10_salary ~ sq_gp + sq_gs + sq_snaps + sq_snaps_per + nl_plays + 
+    nl_plays_comp + YDS + YDS.ATT + nl_td + nl_fum
+
+                Df Deviance    AIC
+- YDS            1    10996 574.63
+- nl_fum         1    11013 574.73
+- sq_gp          1    11109 575.34
+- YDS.ATT        1    11140 575.54
+<none>                10871 575.83
++ INT            1    10754 577.07
+- nl_td          1    11396 577.13
++ Comp_Percent   1    10853 577.71
+- nl_plays_comp  1    11588 578.30
+- nl_plays       1    11627 578.53
+- sq_snaps_per   1    11666 578.76
+- sq_snaps       1    11805 579.60
+- sq_gs          1    11896 580.14
+
+Step:  AIC=574.63
+log10_salary ~ sq_gp + sq_gs + sq_snaps + sq_snaps_per + nl_plays + 
+    nl_plays_comp + YDS.ATT + nl_td + nl_fum
+
+                Df Deviance    AIC
+- sq_gp          1    11151 573.61
+- nl_fum         1    11152 573.61
+- YDS.ATT        1    11255 574.26
+<none>                10996 574.63
++ YDS            1    10871 575.83
++ INT            1    10874 575.85
++ Comp_Percent   1    10974 576.48
+- nl_td          1    11691 576.91
+- nl_plays       1    11702 576.98
+- sq_snaps       1    11884 578.06
+- sq_snaps_per   1    11914 578.24
+- sq_gs          1    11945 578.42
+- nl_plays_comp  1    12312 580.54
+
+Step:  AIC=573.61
+log10_salary ~ sq_gs + sq_snaps + sq_snaps_per + nl_plays + nl_plays_comp + 
+    YDS.ATT + nl_td + nl_fum
+
+                Df Deviance    AIC
+- nl_fum         1    11331 572.73
+<none>                11151 573.61
+- YDS.ATT        1    11488 573.69
++ sq_gp          1    10996 574.63
++ INT            1    11037 574.89
++ YDS            1    11109 575.34
++ Comp_Percent   1    11128 575.46
+- nl_td          1    11806 575.61
+- nl_plays       1    11838 575.79
+- sq_snaps       1    12000 576.74
+- sq_gs          1    12002 576.76
+- sq_snaps_per   1    12134 577.52
+- nl_plays_comp  1    12573 580.01
+
+Step:  AIC=572.73
+log10_salary ~ sq_gs + sq_snaps + sq_snaps_per + nl_plays + nl_plays_comp + 
+    YDS.ATT + nl_td
+
+                Df Deviance    AIC
+- YDS.ATT        1    11594 572.33
+<none>                11331 572.73
++ nl_fum         1    11151 573.61
++ sq_gp          1    11152 573.61
++ INT            1    11193 573.87
++ YDS            1    11285 574.44
+- nl_plays       1    11962 574.52
++ Comp_Percent   1    11325 574.69
+- nl_td          1    12020 574.86
+- sq_snaps       1    12101 575.33
+- sq_snaps_per   1    12175 575.76
+- sq_gs          1    12386 576.96
+- nl_plays_comp  1    12721 578.83
+
+Step:  AIC=572.33
+log10_salary ~ sq_gs + sq_snaps + sq_snaps_per + nl_plays + nl_plays_comp + 
+    nl_td
+
+                Df Deviance    AIC
+<none>                11594 572.33
++ YDS.ATT        1    11331 572.73
++ sq_gp          1    11347 572.83
+- nl_plays       1    12131 573.50
++ nl_fum         1    11488 573.69
++ Comp_Percent   1    11501 573.77
++ INT            1    11552 574.08
++ YDS            1    11565 574.16
+- sq_snaps_per   1    12335 574.67
+- sq_snaps       1    12367 574.85
+- sq_gs          1    12560 575.94
+- nl_td          1    12702 576.73
+- nl_plays_comp  1    13069 578.72
+
+Call:  glm(formula = log10_salary ~ sq_gs + sq_snaps + sq_snaps_per + 
+    nl_plays + nl_plays_comp + nl_td, data = QB_Data)
+
+Coefficients:
+  (Intercept)          sq_gs       sq_snaps   sq_snaps_per       nl_plays  nl_plays_comp          nl_td  
+      10.6364         2.1362         0.2509        -0.4417        -0.2291         0.3264         1.2431  
+
+Degrees of Freedom: 69 Total (i.e. Null);  63 Residual
+Null Deviance:	    25450 
+Residual Deviance: 11590 	AIC: 572.3
+Stepwise Model Path 
+Analysis of Deviance Table
+
+Initial Model:
+log10_salary ~ sq_gp + sq_gs + sq_snaps + sq_snaps_per + nl_plays + 
+    nl_plays_comp + Comp_Percent + YDS + YDS.ATT + nl_td + INT + 
+    nl_fum
+
+Final Model:
+log10_salary ~ sq_gs + sq_snaps + sq_snaps_per + nl_plays + nl_plays_comp + 
+    nl_td
+
+
+            Step Df   Deviance Resid. Df Resid. Dev      AIC
+1                                     57   10746.95 579.0231
+2 - Comp_Percent  1   6.949146        58   10753.90 577.0684
+3          - INT  1 116.932517        59   10870.83 575.8254
+4          - YDS  1 125.276522        60   10996.11 574.6275
+5        - sq_gp  1 154.724122        61   11150.83 573.6056
+6       - nl_fum  1 180.500681        62   11331.33 572.7296
+7      - YDS.ATT  1 262.529526        63   11593.86 572.3329
+Start:  AIC=378.37
+log10_salary ~ sq_gp + sq_gs + sq_snaps + sq_snaps_per + nl_plays + 
+    nl_plays_comp + Comp_Percent + YDS + YDS.ATT + nl_td + INT + 
+    nl_fum
+
+                Df Sum of Sq   RSS    AIC
+- Comp_Percent   1      6.95 10754 376.42
+- INT            1    105.84 10853 377.06
+- YDS            1    117.82 10865 377.13
+- nl_fum         1    126.18 10873 377.19
+- YDS.ATT        1    239.22 10986 377.91
+- sq_gp          1    243.09 10990 377.94
+<none>                       10747 378.37
+- nl_td          1    445.46 11192 379.21
+- sq_snaps_per   1    527.46 11274 379.73
+- sq_snaps       1    713.03 11460 380.87
+- nl_plays_comp  1    735.47 11482 381.01
+- nl_plays       1    841.34 11588 381.65
+- sq_gs          1    994.06 11741 382.56
+
+Step:  AIC=376.42
+log10_salary ~ sq_gp + sq_gs + sq_snaps + sq_snaps_per + nl_plays + 
+    nl_plays_comp + YDS + YDS.ATT + nl_td + INT + nl_fum
+
+                Df Sum of Sq   RSS    AIC
+- INT            1    116.93 10871 375.17
+- nl_fum         1    119.57 10874 375.19
+- YDS            1    120.56 10874 375.20
+- sq_gp          1    244.77 10999 375.99
+<none>                       10754 376.42
+- YDS.ATT        1    350.66 11105 376.66
+- nl_td          1    443.97 11198 377.25
+- sq_snaps_per   1    524.55 11278 377.75
++ Comp_Percent   1      6.95 10747 378.37
+- sq_snaps       1    717.44 11471 378.94
+- nl_plays_comp  1    777.13 11531 379.30
+- nl_plays       1    838.90 11593 379.68
+- sq_gs          1   1019.14 11773 380.76
+
+Step:  AIC=375.17
+log10_salary ~ sq_gp + sq_gs + sq_snaps + sq_snaps_per + nl_plays + 
+    nl_plays_comp + YDS + YDS.ATT + nl_td + nl_fum
+
+                Df Sum of Sq   RSS    AIC
+- YDS            1    125.28 10996 373.98
+- nl_fum         1    141.77 11013 374.08
+- sq_gp          1    237.86 11109 374.69
+- YDS.ATT        1    269.67 11140 374.89
+<none>                       10871 375.17
++ INT            1    116.93 10754 376.42
+- nl_td          1    525.09 11396 376.48
++ Comp_Percent   1     18.04 10853 377.06
+- nl_plays_comp  1    717.23 11588 377.65
+- nl_plays       1    755.73 11627 377.88
+- sq_snaps_per   1    794.73 11666 378.11
+- sq_snaps       1    934.43 11805 378.95
+- sq_gs          1   1025.72 11896 379.49
+
+Step:  AIC=373.98
+log10_salary ~ sq_gp + sq_gs + sq_snaps + sq_snaps_per + nl_plays + 
+    nl_plays_comp + YDS.ATT + nl_td + nl_fum
+
+                Df Sum of Sq   RSS    AIC
+- sq_gp          1    154.72 11151 372.95
+- nl_fum         1    155.72 11152 372.96
+- YDS.ATT        1    259.25 11255 373.61
+<none>                       10996 373.98
++ YDS            1    125.28 10871 375.17
++ INT            1    121.65 10874 375.20
++ Comp_Percent   1     22.64 10974 375.83
+- nl_td          1    694.50 11691 376.26
+- nl_plays       1    705.97 11702 376.33
+- sq_snaps       1    887.88 11884 377.41
+- sq_snaps_per   1    917.57 11914 377.59
+- sq_gs          1    948.92 11945 377.77
+- nl_plays_comp  1   1315.37 12312 379.89
+
+Step:  AIC=372.95
+log10_salary ~ sq_gs + sq_snaps + sq_snaps_per + nl_plays + nl_plays_comp + 
+    YDS.ATT + nl_td + nl_fum
+
+                Df Sum of Sq   RSS    AIC
+- nl_fum         1    180.50 11331 372.08
+<none>                       11151 372.95
+- YDS.ATT        1    337.70 11488 373.04
++ sq_gp          1    154.72 10996 373.98
++ INT            1    113.76 11037 374.24
++ YDS            1     42.14 11109 374.69
++ Comp_Percent   1     22.74 11128 374.81
+- nl_td          1    655.70 11806 374.95
+- nl_plays       1    687.17 11838 375.14
+- sq_snaps       1    848.73 12000 376.09
+- sq_gs          1    851.50 12002 376.11
+- sq_snaps_per   1    983.25 12134 376.87
+- nl_plays_comp  1   1422.03 12573 379.36
+
+Step:  AIC=372.08
+log10_salary ~ sq_gs + sq_snaps + sq_snaps_per + nl_plays + nl_plays_comp + 
+    YDS.ATT + nl_td
+
+                Df Sum of Sq   RSS    AIC
+- YDS.ATT        1    262.53 11594 371.68
+<none>                       11331 372.08
++ nl_fum         1    180.50 11151 372.95
++ sq_gp          1    179.51 11152 372.96
++ INT            1    138.50 11193 373.22
++ YDS            1     46.19 11285 373.79
+- nl_plays       1    630.66 11962 373.87
++ Comp_Percent   1      5.98 11325 374.04
+- nl_td          1    688.87 12020 374.21
+- sq_snaps       1    769.67 12101 374.68
+- sq_snaps_per   1    843.71 12175 375.11
+- sq_gs          1   1054.52 12386 376.31
+- nl_plays_comp  1   1389.78 12721 378.18
+
+Step:  AIC=371.68
+log10_salary ~ sq_gs + sq_snaps + sq_snaps_per + nl_plays + nl_plays_comp + 
+    nl_td
+
+                Df Sum of Sq   RSS    AIC
+<none>                       11594 371.68
++ YDS.ATT        1    262.53 11331 372.08
++ sq_gp          1    246.75 11347 372.18
+- nl_plays       1    536.99 12131 372.85
++ nl_fum         1    105.33 11488 373.04
++ Comp_Percent   1     93.09 11501 373.12
++ INT            1     41.95 11552 373.43
++ YDS            1     28.65 11565 373.51
+- sq_snaps_per   1    741.56 12335 374.02
+- sq_snaps       1    772.97 12367 374.20
+- sq_gs          1    966.52 12560 375.29
+- nl_td          1   1108.56 12702 376.07
+- nl_plays_comp  1   1475.31 13069 378.07
+
+Call:
+lm(formula = log10_salary ~ sq_gs + sq_snaps + sq_snaps_per + 
+    nl_plays + nl_plays_comp + nl_td, data = QB_Data)
+
+Coefficients:
+  (Intercept)          sq_gs       sq_snaps   sq_snaps_per       nl_plays  nl_plays_comp          nl_td  
+      10.6364         2.1362         0.2509        -0.4417        -0.2291         0.3264         1.2431  
+
+Stepwise Model Path 
+Analysis of Deviance Table
+
+Initial Model:
+log10_salary ~ sq_gp + sq_gs + sq_snaps + sq_snaps_per + nl_plays + 
+    nl_plays_comp + Comp_Percent + YDS + YDS.ATT + nl_td + INT + 
+    nl_fum
+
+Final Model:
+log10_salary ~ sq_gs + sq_snaps + sq_snaps_per + nl_plays + nl_plays_comp + 
+    nl_td
+
+
+            Step Df   Deviance Resid. Df Resid. Dev      AIC
+1                                     57   10746.95 378.3717
+2 - Comp_Percent  1   6.949146        58   10753.90 376.4170
+3          - INT  1 116.932517        59   10870.83 375.1740
+4          - YDS  1 125.276522        60   10996.11 373.9761
+5        - sq_gp  1 154.724122        61   11150.83 372.9542
+6       - nl_fum  1 180.500681        62   11331.33 372.0782
+7      - YDS.ATT  1 262.529526        63   11593.86 371.6815
+
+
+Response variable: log10_salary 
+Total response variance: 369 
+Analysis based on 70 observations 
+
+6 Regressors: 
+sq_gs sq_snaps sq_snaps_per nl_plays nl_plays_comp nl_td 
+Proportion of variance explained by model: 54.4%
+Metrics are normalized to sum to 100% (rela=TRUE). 
+
+Relative importance metrics: 
+
+                 lmg   last   first   pratt
+sq_gs         0.3194 0.1725 0.34742  0.7312
+sq_snaps      0.0492 0.1380 0.01850  0.0664
+sq_snaps_per  0.2019 0.1324 0.24308 -0.4412
+nl_plays      0.0195 0.0959 0.01063 -0.0461
+nl_plays_comp 0.0494 0.2634 0.00115  0.0205
+nl_td         0.3607 0.1979 0.37922  0.6692
+
+Average coefficients for different model sizes: 
+
+                  1X    2Xs     3Xs     4Xs    5Xs    6Xs
+sq_gs         2.1645 2.0182  1.9688  1.9809  2.042  2.136
+sq_snaps      0.1492 0.1628  0.1828  0.2088  0.224  0.251
+sq_snaps_per  0.5190 0.2293 -0.0178 -0.2139 -0.357 -0.442
+nl_plays      0.1127 0.0658 -0.0067 -0.0924 -0.160 -0.229
+nl_plays_comp 0.0391 0.0815  0.1353  0.2080  0.269  0.326
+nl_td         1.5022 1.5194  1.4977  1.4481  1.361  1.243
+
+ 
+ Confidence interval information ( 1000 bootstrap replicates, bty= perc ): 
+Relative Contributions with confidence intervals: 
+ 
+                                      Lower  Upper
+                    percentage 0.95   0.95    0.95   
+sq_gs.lmg            0.3194    AB____  0.1990  0.4052
+sq_snaps.lmg         0.0492    __CDEF  0.0060  0.1745
+sq_snaps_per.lmg     0.2019    __CD__  0.1405  0.2596
+nl_plays.lmg         0.0195    ___DEF  0.0069  0.0736
+nl_plays_comp.lmg    0.0494    ___DEF  0.0107  0.1516
+nl_td.lmg            0.3607    AB____  0.2553  0.4732
+                                                     
+sq_gs.last           0.1725    ABCDEF  0.0063  0.4450
+sq_snaps.last        0.1380    ABCDEF  0.0013  0.4170
+sq_snaps_per.last    0.1324    ABCDEF  0.0027  0.3340
+nl_plays.last        0.0959    _BCDEF  0.0009  0.2420
+nl_plays_comp.last   0.2634    ABCDE_  0.0438  0.4730
+nl_td.last           0.1979    ABCDEF  0.0114  0.6070
+                                                     
+sq_gs.first          0.3474    AB____  0.2669  0.3968
+sq_snaps.first       0.0185    ___DEF  0.0001  0.1039
+sq_snaps_per.first   0.2431    __C___  0.1361  0.3018
+nl_plays.first       0.0106    ___DEF  0.0000  0.0826
+nl_plays_comp.first  0.0012    ___DEF  0.0000  0.0515
+nl_td.first          0.3792    AB____  0.3098  0.4467
+                                                     
+sq_gs.pratt          0.7312    AB____  0.1123  1.3954
+sq_snaps.pratt       0.0664    _BCDE_ -0.0210  0.2466
+sq_snaps_per.pratt  -0.4412    ____EF -1.0205 -0.0460
+nl_plays.pratt      -0.0461    __CDE_ -0.1502  0.0736
+nl_plays_comp.pratt  0.0205    __CDE_ -0.0698  0.1677
+nl_td.pratt          0.6692    AB____  0.1696  1.2202
+
+Letters indicate the ranks covered by bootstrap CIs. 
+(Rank bootstrap confidence intervals always obtained by percentile method) 
+CAUTION: Bootstrap confidence intervals can be somewhat liberal. 
+
+ 
+ Differences between Relative Contributions: 
+ 
+                                                 Lower   Upper
+                                 difference 0.95 0.95    0.95   
+sq_gs-sq_snaps.lmg                0.2702     *    0.0653  0.3820
+sq_gs-sq_snaps_per.lmg            0.1175     *    0.0130  0.2205
+sq_gs-nl_plays.lmg                0.2999     *    0.1481  0.3881
+sq_gs-nl_plays_comp.lmg           0.2699     *    0.0952  0.3796
+sq_gs-nl_td.lmg                  -0.0413         -0.2445  0.1084
+sq_snaps-sq_snaps_per.lmg        -0.1527         -0.2395  0.0141
+sq_snaps-nl_plays.lmg             0.0297         -0.0319  0.1364
+sq_snaps-nl_plays_comp.lmg       -0.0003         -0.1144  0.1264
+sq_snaps-nl_td.lmg               -0.3115     *   -0.4496 -0.1154
+sq_snaps_per-nl_plays.lmg         0.1824     *    0.0859  0.2455
+sq_snaps_per-nl_plays_comp.lmg    0.1525     *    0.0185  0.2302
+sq_snaps_per-nl_td.lmg           -0.1588     *   -0.2942 -0.0307
+nl_plays-nl_plays_comp.lmg       -0.0300         -0.1183  0.0279
+nl_plays-nl_td.lmg               -0.3412     *   -0.4500 -0.2037
+nl_plays_comp-nl_td.lmg          -0.3112     *   -0.4439 -0.1373
+                                                                
+sq_gs-sq_snaps.last               0.0346         -0.3460  0.3657
+sq_gs-sq_snaps_per.last           0.0402         -0.2210  0.3235
+sq_gs-nl_plays.last               0.0767         -0.1733  0.4002
+sq_gs-nl_plays_comp.last         -0.0908         -0.3409  0.2884
+sq_gs-nl_td.last                 -0.0254         -0.5771  0.3908
+sq_snaps-sq_snaps_per.last        0.0056         -0.3168  0.3883
+sq_snaps-nl_plays.last            0.0421         -0.0999  0.3193
+sq_snaps-nl_plays_comp.last      -0.1254         -0.4157  0.2861
+sq_snaps-nl_td.last              -0.0599         -0.5403  0.3313
+sq_snaps_per-nl_plays.last        0.0365         -0.2085  0.3178
+sq_snaps_per-nl_plays_comp.last  -0.1310         -0.4118  0.2186
+sq_snaps_per-nl_td.last          -0.0655         -0.5058  0.1806
+nl_plays-nl_plays_comp.last      -0.1675         -0.4236  0.0800
+nl_plays-nl_td.last              -0.1020         -0.5652  0.1788
+nl_plays_comp-nl_td.last          0.0655         -0.4910  0.4173
+                                                                
+sq_gs-sq_snaps.first              0.3289     *    0.1811  0.3902
+sq_gs-sq_snaps_per.first          0.1043     *    0.0094  0.2325
+sq_gs-nl_plays.first              0.3368     *    0.1996  0.3913
+sq_gs-nl_plays_comp.first         0.3463     *    0.2291  0.3937
+sq_gs-nl_td.first                -0.0318         -0.1342  0.0374
+sq_snaps-sq_snaps_per.first      -0.2246     *   -0.2962 -0.0604
+sq_snaps-nl_plays.first           0.0079         -0.0470  0.0802
+sq_snaps-nl_plays_comp.first      0.0173         -0.0381  0.0923
+sq_snaps-nl_td.first             -0.3607     *   -0.4387 -0.2256
+sq_snaps_per-nl_plays.first       0.2324     *    0.0946  0.2968
+sq_snaps_per-nl_plays_comp.first  0.2419     *    0.1132  0.2972
+sq_snaps_per-nl_td.first         -0.1361     *   -0.2985 -0.0278
+nl_plays-nl_plays_comp.first      0.0095         -0.0314  0.0602
+nl_plays-nl_td.first             -0.3686     *   -0.4424 -0.2382
+nl_plays_comp-nl_td.first        -0.3781     *   -0.4436 -0.2744
+                                                                
+sq_gs-sq_snaps.pratt              0.6648     *    0.0273  1.3601
+sq_gs-sq_snaps_per.pratt          1.1723     *    0.3033  2.3330
+sq_gs-nl_plays.pratt              0.7773     *    0.1320  1.4247
+sq_gs-nl_plays_comp.pratt         0.7107     *    0.0809  1.3918
+sq_gs-nl_td.pratt                 0.0620         -1.0105  1.0840
+sq_snaps-sq_snaps_per.pratt       0.5075     *    0.1733  1.0588
+sq_snaps-nl_plays.pratt           0.1125         -0.0598  0.3341
+sq_snaps-nl_plays_comp.pratt      0.0459         -0.1290  0.2178
+sq_snaps-nl_td.pratt             -0.6028     *   -1.1880 -0.0551
+sq_snaps_per-nl_plays.pratt      -0.3951         -1.0117  0.0271
+sq_snaps_per-nl_plays_comp.pratt -0.4617     *   -1.0863 -0.0586
+sq_snaps_per-nl_td.pratt         -1.1104     *   -1.9338 -0.3589
+nl_plays-nl_plays_comp.pratt     -0.0666         -0.2842  0.1243
+nl_plays-nl_td.pratt             -0.7153     *   -1.2547 -0.1865
+nl_plays_comp-nl_td.pratt        -0.6487     *   -1.2255 -0.0945
+
+* indicates that CI for difference does not include 0. 
+CAUTION: Bootstrap confidence intervals can be somewhat liberal. 
+$xlog
+[1] FALSE
+
+$ylog
+[1] FALSE
+
+$adj
+[1] 0.5
+
+$ann
+[1] TRUE
+
+$ask
+[1] FALSE
+
+$bg
+[1] "white"
+
+$bty
+[1] "o"
+
+$cex
+[1] 0.83
+
+$cex.axis
+[1] 1
+
+$cex.lab
+[1] 1
+
+$cex.main
+[1] 1.2
+
+$cex.sub
+[1] 1
+
+$col
+[1] "black"
+
+$col.axis
+[1] "black"
+
+$col.lab
+[1] "black"
+
+$col.main
+[1] "black"
+
+$col.sub
+[1] "black"
+
+$crt
+[1] 0
+
+$err
+[1] 0
+
+$family
+[1] ""
+
+$fg
+[1] "black"
+
+$fig
+[1] 0.5 1.0 0.0 0.5
+
+$fin
+[1] 9.81 3.92
+
+$font
+[1] 1
+
+$font.axis
+[1] 1
+
+$font.lab
+[1] 1
+
+$font.main
+[1] 2
+
+$font.sub
+[1] 1
+
+$lab
+[1] 5 5 7
+
+$las
+[1] 0
+
+$lend
+[1] "round"
+
+$lheight
+[1] 1
+
+$ljoin
+[1] "round"
+
+$lmitre
+[1] 10
+
+$lty
+[1] "solid"
+
+$lwd
+[1] 1
+
+$mai
+[1] 0.52 0.82 0.82 0.42
+
+$mar
+[1] 5.1 4.1 4.1 2.1
+
+$mex
+[1] 1
+
+$mfcol
+[1] 1 1
+
+$mfg
+[1] 1 1 1 1
+
+$mfrow
+[1] 1 1
+
+$mgp
+[1] 3 1 0
+
+$mkh
+[1] 0.001
+
+$new
+[1] TRUE
+
+$oma
+[1] 3 0 4 0
+
+$omd
+[1] 0 1 0 1
+
+$omi
+[1] 0 0 0 0
+
+$pch
+[1] 1
+
+$pin
+[1] 8.57 3.48
+
+$plt
+[1] 0.0632 0.9368 0.1728 0.8272
+
+$ps
+[1] 12
+
+$pty
+[1] "m"
+
+$smo
+[1] 1
+
+$srt
+[1] 0
+
+$tck
+[1] NA
+
+$tcl
+[1] -0.5
+
+$usr
+[1]   -0.08    7.48 -104.00  140.00
+
+$xaxp
+[1] 10 70  6
+
+$xaxs
+[1] "r"
+
+$xaxt
+[1] "s"
+
+$xpd
+[1] FALSE
+
+$yaxp
+[1]  0 60  6
+
+$yaxs
+[1] "r"
+
+$yaxt
+[1] "s"
+
+$ylbias
+[1] 0.2
+
+
+
+
+
+Call:
+lm(formula = log10_salary ~ sq_rank + YDS + YDS.ATT + nl_td, 
+    data = Norm_OFF_Salary)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-1.4540 -0.2777  0.0247  0.2857  1.6352 
+
+Coefficients:
+              Estimate Std. Error t value Pr(>|t|)    
+(Intercept)  6.334e+00  9.664e-02  65.546  < 2e-16 ***
+sq_rank     -6.835e-02  8.589e-03  -7.958 1.05e-14 ***
+YDS          9.659e-05  4.679e-05   2.065  0.03945 *  
+YDS.ATT      1.257e-02  4.290e-03   2.930  0.00353 ** 
+nl_td        8.420e-02  3.145e-02   2.677  0.00766 ** 
+---
+Signif. codes:  0 �***� 0.001 �**� 0.01 �*� 0.05 �.� 0.1 � � 1
+
+Residual standard error: 0.4463 on 534 degrees of freedom
+Multiple R-squared:  0.4217,	Adjusted R-squared:  0.4174 
+F-statistic: 97.37 on 4 and 534 DF,  p-value: < 2.2e-16
+
+Analysis of Variance Table
+
+Response: log10_salary
+           Df  Sum Sq Mean Sq  F value    Pr(>F)    
+sq_rank     1  66.481  66.481 333.7713 < 2.2e-16 ***
+YDS         1   5.789   5.789  29.0643 1.053e-07 ***
+YDS.ATT     1   3.879   3.879  19.4746 1.234e-05 ***
+nl_td       1   1.427   1.427   7.1659  0.007659 ** 
+Residuals 534 106.363   0.199                       
+---
+Signif. codes:  0 �***� 0.001 �**� 0.01 �*� 0.05 �.� 0.1 � � 1
+                 Estimate         2.5 %       97.5 %
+(Intercept)  6.334359e+00  6.144517e+00  6.524200242
+sq_rank     -6.835120e-02 -8.522362e-02 -0.051478781
+YDS          9.658849e-05  4.682963e-06  0.000188494
+YDS.ATT      1.257079e-02  4.142773e-03  0.020998817
+nl_td        8.419752e-02  2.241035e-02  0.145984686
+(Intercept)     sq_rank         YDS     YDS.ATT       nl_td 
+563.6078131   0.9339324   1.0000966   1.0126501   1.0878437 
+                    2.5 %       97.5 %
+(Intercept)  6.144517e+00  6.524200242
+sq_rank     -8.522362e-02 -0.051478781
+YDS          4.682963e-06  0.000188494
+YDS.ATT      4.142773e-03  0.020998817
+nl_td        2.241035e-02  0.145984686
