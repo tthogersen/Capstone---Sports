@@ -26,7 +26,7 @@ INT[is.na(INT)] = 0
 
 # Convert data set to data.frame#
 
-OffNFLSalary = data.frame(NFLPlayerSalaryData)
+OffNFLSalary = data.frame(OffNFLSalary)
 attach(OffNFLSalary)
 head(OffNFLSalary)
 
@@ -44,7 +44,7 @@ OFFSalaryCor
 
 # Basic Scatterplot Matrix
 pairs(
-  ~ Salary + Rank + GP + GS + Snaps + Snaps_Percent + Plays + Plays_Comp +
+  ~ Salary + Rank + GP + GS + Snaps + Snap + Plays + Plays_Comp +
     Comp_Percent  + YDS  + YDS.ATT + TD + INT + Fum,
   data = OffNFLSalary,
   main = "Simple Scatterplot Matrix"
@@ -242,12 +242,20 @@ Norm_OFF_Salary = data.frame(Norm_OFF_Salary)
 attach(Norm_OFF_Salary)
 summary(Norm_OFF_Salary)
 
+# Cbind new normalized da
+
+head(POS)
+Norm_OFF_Salary = data.frame(Norm_OFF_Salary)
+attach(Norm_OFF_Salary)
+summary(Norm_OFF_Salary)
+
 
 # New Correlation Matrix with Normalized data
 
 
 Norm_OFF_Salary = data.frame(
   cbind(
+    Rank, 
     log10_salary,
     sq_gp,
     sq_gs,
@@ -264,6 +272,7 @@ Norm_OFF_Salary = data.frame(
   )
 )
 
+head(Norm_OFF_Salary)
 cor(Norm_OFF_Salary)
 
 
@@ -282,7 +291,7 @@ NFLOffSalary_Cor
 
 library(car)
 scatterplotMatrix(
-  ~sq_rank + log2_salary + sq_gp + sq_gs + sq_snaps + sq_snaps_per +
+  ~POS + sq_rank + log10_salary + sq_gp + sq_gs + sq_snaps + sq_snaps_per +
     nl_plays + nl_plays_comp +
     Comp_Percent + YDS + YDS.ATT + nl_td + INT + nl_fum,
   data = Norm_OFF_Salary,
@@ -358,13 +367,12 @@ print(step_both_nfl_Salary)
 print(aic_both_nfl_Salary)
 sink()
 
+
 # new lm Data model with stepwise/aic output
 
-fit2_Off_NFL_Salary = lm(log10_salary ~ sq_rank +
-                            YDS + YDS.ATT + INT + nl_td, data = Norm_OFF_Salary, family = gaussian)
+fit2_Off_NFL_Salary = lm(log10_salary ~ sq_rank + YDS + YDS.ATT + INT + nl_td, data = Norm_OFF_Salary)
 
-lm_Off_NFL_Salary = lm(log10_salary ~ sq_rank +
-                            YDS + YDS.ATT + INT +nl_td,data = Norm_OFF_Salary)
+
 sink(
   "School/DA 485/mod2_lm_Summary_AOV.txt",
   type = "output",
@@ -378,6 +386,7 @@ print(exp(coef(fit2_Off_NFL_Salary)))
 print(confint(fit2_Off_NFL_Salary))
 
 sink()
+
 
 
 # Cluster Analysis
@@ -458,6 +467,12 @@ Norm2_OFF_Salary <-  na.omit(Norm2_OFF_Salary)
 fit <- Mclust(Norm2_OFF_Salary)
 summary(fit) # display the best model 
 
-# Subsetting data into 2 different position groups QB and WR
+
+
+
+
+
+
+
 
 
