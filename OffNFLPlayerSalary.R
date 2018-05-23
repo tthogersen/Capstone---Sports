@@ -7,12 +7,9 @@ library(car)
 library(lattice)
 library("PerformanceAnalytics")
 library(mclust)
-
-
-# Imported dataset from excel#
-
-# Packages:
-
+library(DAAG) # K-fold cross-validation
+#install.packages("naivebayes")
+library(naivebayes)
 library(car)
 library(lattice)
 #install.packages("PerformanceAnalytics")
@@ -22,6 +19,11 @@ library(cluster)
 library(fpc)
 #install.packages("ResourceSelection") # enable Hosmer and Lemeshow goodness of fit (GOF) test
 library(ResourceSelection)
+
+# Imported dataset from excel#
+
+# Packages:
+
 
 
 library(readxl)
@@ -47,24 +49,18 @@ head(OffNFLSalary)
 
 # Scatterplot / Correlation Matrices from the car Package
 
-salary = data.frame(OffNFLSalary[sapply(OffNFLSalary, is.numeric)])
+corOffNFLSalary = cor(data.frame(OffNFLSalary[sapply(OffNFLSalary, is.numeric)]))
 
 chart.Correlation(salary, histogram = TRUE, pch = 19)
 
 
 
-# Basic Scatterplot Matrix
-pairs(
-  ~ Salary + Rank + GP + GS + Snaps + Snaps_percent + Plays + Plays_Com +
-    
-    INT[is.na(INT)] = 0
+# Basic Correlation  Matrix
+
+INT[is.na(INT)] = 0
+
   OFFSalaryCor = cor(data.frame(OffNFLSalary[sapply(OffNFLSalary, is.numeric)]))
   OFFSalaryCor
-  
-  
-  # Scatterplot Matrices from the car Package
-  
-  
   
   
   # Basic Scatterplot Matrix
@@ -118,10 +114,10 @@ pairs(
     col = "green"
   )
   #After
-  sq_rank = sqrt(Rank)
+  Rank = (OffNFLSalary$Rank)
   hist(
-    sq_rank,
-    xlim = c(0, 15),
+    Rank,
+    #xlim = c(0, 15),
     xlab = "Normalized NFL Rank",
     main = "Historam of NFL Rank",
     col = "blue"
@@ -407,32 +403,20 @@ pairs(
     col = "blue"
   )
   
-  # Cbind new normalized da
-  
-  head(Norm_OFF_Salary)
-  Norm_OFF_Salary = data.frame(Norm_OFF_Salary)
-  attach(Norm_OFF_Salary)
-  summary(Norm_OFF_Salary)
+  par(mfrow = c(1, 1))
   
   # Cbind new normalized da
-  
-  head(POS)
-  Norm_OFF_Salary = data.frame(Norm_OFF_Salary)
-  attach(Norm_OFF_Salary)
-  summary(Norm_OFF_Salary)
-  
   
   # New Correlation Matrix with Normalized data
   
-  Norm_OFF_Salary[is.na(Norm_OFF_Salary)] = 0
   nl_td[is.infinite(nl_td)] = 0
   INT[is.infinite(INT)] = 0
   nl_fum[is.infinite(nl_fum)] = 0
-  Norm_OFF_Salary[is.infinite(Norm_OFF_Salary)] = 0
-  
+
   Norm_OFF_Salary = data.frame(
     cbind(
       Rank,
+      POS,
       log10_salary,
       sq_gp,
       sq_gs,
@@ -450,7 +434,9 @@ pairs(
   )
   
   head(Norm_OFF_Salary)
-  cor(Norm_OFF_Salary)
+  Norm_OFF_Salary = data.frame(Norm_OFF_Salary)
+  attach(Norm_OFF_Salary)
+  summary(Norm_OFF_Salary)
   
   
   # removed NA value in INT column
@@ -462,22 +448,10 @@ pairs(
   NFLOffSalary_Cor = cor(Norm_OFF_Salary)
   NFLOffSalary_Cor
   
-  # Scatterplot Matrices from the car Package
-  
-  
-  
-  scatterplotMatrix(
-    ~ POS + sq_rank + log10_salary + sq_gp + sq_gs + sq_snaps + sq_snaps_per +
-      nl_plays + nl_plays_comp +
-      Comp_Percent + YDS + YDS.ATT + nl_td + INT + nl_fum,
-    data = Norm_OFF_Salary,
-    main = "NFL Offensive Salary"
-  )
-  
   #install.packages("PerformanceAnalytics")
   
   
-  library("PerformanceAnalytics")
+  #library("PerformanceAnalytics")
   Norm_OFF_Salary[is.na(Norm_OFF_Salary)] = 0
   
   chart.Correlation(Norm_OFF_Salary, histogram = TRUE, pch = 19)
@@ -491,7 +465,7 @@ pairs(
   # getting the names of all variables
   names(Norm_OFF_Salary)
   
-  # Creating lm
+  # Creating lm model
   
   # Check Cor matrix for collinearity and correlation
   sink(
@@ -505,19 +479,9 @@ pairs(
   
   
   # choose the following variables due to least amount of collinearity form the correlation matrix
-  
-  ## Created GLM Model
-  fit_Off_NFL_Salary = lm(
-    log10_salary ~ POS + sq_rank +
-      YDS + YDS.ATT + INT + nl_td + nl_fum,
-    data = Norm_OFF_Salary
-  )
-  
-  
-  
-  
+
   ## Created lm Model
-  fit_Off_NFL_Salary = lm(log10_salary ~ sq_rank +
+  fit_Off_NFL_Salary = lm(log10_salary ~ Rank + POS +sq_gp+sq_snaps_per+Comp_Percent+
                             YDS + YDS.ATT + INT + nl_td + nl_fum,
                           data = Norm_OFF_Salary)
   sink(
@@ -536,10 +500,7 @@ pairs(
   
   # Stepwise Regression for NFL Salary information
   
-  
-  
-  
-  # AIC Stepwise - Both
+    # AIC Stepwise - Both
   aic_both_nfl_Salary = stepAIC(fit_Off_NFL_Salary, direction = "both")
   
   
@@ -558,14 +519,9 @@ pairs(
   print(aic_both_nfl_Salary)
   sink()
   
+    # new lm Data model with stepwise/aic output
   
-  
-  fit2_Off_NFL_Salary = lm(log10_salary ~ sq_rank +
-                             YDS + YDS.ATT + nl_td, data = Norm_OFF_Salary)
-  
-  # new lm Data model with stepwise/aic output
-  
-  fit2_Off_NFL_Salary = lm(log10_salary ~ sq_rank + YDS + YDS.ATT + INT + nl_td, data = Norm_OFF_Salary)
+  fit2_Off_NFL_Salary = lm(log10_salary ~ Rank + sq_gp + YDS + nl_td+POS,data = Norm_OFF_Salary)
   
   
   sink(
@@ -574,15 +530,28 @@ pairs(
     append = FALSE,
     split = TRUE
   )
-  print(summary(fit2_Off_NFL_Salary))
-  print(anova(fit2_Off_NFL_Salary, test = "Chisq"))
-  print(Confint(fit2_Off_NFL_Salary))
-  print(exp(coef(
-    fit2_Off_NFL_Salary
-  )))
-  print(confint(fit2_Off_NFL_Salary))
+  
+  Norm_OFF_Salary[is.na(Norm_OFF_Salary)] = 0
+  nl_td[is.infinite(nl_td)] = 0
+  INT[is.infinite(INT)] = 0
+  nl_fum[is.infinite(nl_fum)] = 0
+
+  
+  print(summary(fit2_Off_NFL_Salary)) # Show summary results
+  print(coefficients(fit2_Off_NFL_Salary)) # model coefficients
+  print(confint(fit2_Off_NFL_Salary, level = 0.95))# CIs for model parameters
+  print(fitted(fit2_Off_NFL_Salary)) # predicted values
+  print(residuals(fit2_Off_NFL_Salary))# residuals
+  print(anova(fit2_Off_NFL_Salary))# anova table
+  print(vcov(fit2_Off_NFL_Salary)) # covariance matrix for model parameters
+  print(influence(fit2_Off_NFL_Salary)) # regression diagnostics
   
   sink()
+  
+  # diagnostic plots
+
+  layout(matrix(c(1, 2, 3, 4), 2, 2)) # optional 4 graphs/page
+  plot(fit2_Off_NFL_Salary)
   
   
   
@@ -593,12 +562,12 @@ pairs(
   
   ## Data Prep mydata <- na.omit(mydata) # listwise deletion of missing
   
+
+  # Prepare Data
+  cadata <- na.omit(Norm_OFF_Salary) # listwise deletion of missing
+  cadata <- scale(Norm_OFF_Salary) # standardize variables 
   
-  Norm2_OFF_Salary <-
-    na.omit(Norm_OFF_Salary) # listwise deletion of missing
-  
-  Norm2_OFF_Salary <-
-    na.omit(Norm_OFF_Salary)# listwise deletion of missing
+  view(cadata)
   
   
   
@@ -607,9 +576,9 @@ pairs(
   # Determine number of clusters
   
   wss <-
-    (nrow(Norm2_OFF_Salary) - 1) * sum(apply(Norm2_OFF_Salary, 2, var))
-  for (i in 1:15)
-    wss[i] <- sum(kmeans(Norm2_OFF_Salary,
+    (nrow(cadata) - 1) * sum(apply(cadata, 2, var))
+  for (i in 2:15)
+    wss[i] <- sum(kmeans(cadata,
                          centers = i)$withinss)
   
   plot(
@@ -626,15 +595,9 @@ pairs(
     split = TRUE
   )
   
-  Norm2_OFF_Salary <-  na.omit(Norm2_OFF_Salary)
+  Norm2_OFF_Salary <-  na.omit(cadata)
   
-  # K-Means Cluster Analysis
-  plot(fit) # plot results
-  # get cluster means
-  print(aggregate(
-    Norm2_OFF_Salary, by = list(fit$cluster), FUN = mean
-  ))
-  
+
   # append cluster assignment
   print(mydata <- data.frame(Norm2_OFF_Salary, fit$cluster))
   sink()
@@ -659,7 +622,6 @@ pairs(
     lines = 0
   )
   
-  
   # Centroid Plot against 1st 2 discriminant functions
   plotcluster(Norm2_OFF_Salary, fit$cluster)
   
@@ -675,14 +637,7 @@ pairs(
   rect.hclust(fit, k = 5, border = "red")
   
   
-  # Model Based Clustering
-  #install.packages("mclust")
-  #library(mclust)
-  Norm2_OFF_Salary <-  na.omit(Norm2_OFF_Salary)
-  fit <- Mclust(Norm2_OFF_Salary)
-  summary(fit) # display the best model
-  
-  
+ 
   # Ward Hierarchical Clustering
   
   d <- dist(Norm2_OFF_Salary, method = "maximum") # distance matrix
@@ -693,16 +648,6 @@ pairs(
   # draw dendogram with red borders around the 5 clusters
   
   rect.hclust(fit, k = 5, border = "red")
-  1
-  
-  
-  # Model Based Clustering
-  install.packages("mclust")
-  library(mclust)
-  Norm2_OFF_Salary <-  na.omit(Norm2_OFF_Salary)
-  fit <- Mclust(Norm2_OFF_Salary)
-  summary(fit) # display the best model
-  
   
   # Bootstrap Measures of Relative Importance (100 samples)
   # library(relaimpo)
@@ -715,35 +660,32 @@ pairs(
   )
   
   # Calculate Relative Importance for Each Predictor
+  library(relaimpo)
+  calc.relimp(fit2_Off_NFL_Salary,type=c("lmg","last","first","pratt"),
+              rela=TRUE)
   
-  calc.relimp(
-    fit2_Off_NFL_Salary,
-    type = c("lmg", "last", "first", "pratt"),
-    rela = TRUE
-  )
+  # Bootstrap Measures of Relative Importance (1000 samples)
+  NLF_booth <- boot.relimp(fit2_Off_NFL_Salary, b = 1000, type = c("lmg",
+                                              "last", "first", "pratt"), rank = TRUE,
+                      diff = TRUE, rela = TRUE)
+  booteval.relimp(NLF_booth) # print result
+  plot(booteval.relimp(NLF_booth,sort=TRUE)) # plot result
   
-  boot_nfl <- boot.relimp(
-    fit2_Off_NFL_Salary,
-    type = c("lmg",
-             "last", "first", "pratt"),
-    
-    rank = TRUE,
-    diff = TRUE,
-    rela = TRUE
-  )
-  print(booteval.relimp(boot_nfl)) # print result
-  print(plot(booteval.relimp(boot_nfl, sort = TRUE))) # plot result
-  sink()
   
-  # diagnostic plots
   
-  sink(
-    "School/DA 485/diagnostic plots.txt",
-    type = "output",
-    append = FALSE,
-    split = TRUE
-  )
+  # Normality of Residuals
+  # qq plot for studentized resid
+  qqPlot(fit2_Off_NFL_Salary, main="QQ Plot")
+  # distribution of studentized residuals
+  library(MASS)
+  sresid <- studres(fit2_Off_NFL_Salary)
+  hist(sresid, freq=FALSE,
+       main="Distribution of NFL Offensive Salary")
+  xfit<-seq(min(sresid),max(sresid),length=40)
+  yfit<-dnorm(xfit)
+  lines(xfit, yfit) 
   
-  layout(matrix(c(1, 2, 3, 4), 2, 2)) # optional 4 graphs/page
-  plot(fit2_Off_NFL_Salary)
+  
+
+  
   
