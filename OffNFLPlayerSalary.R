@@ -584,6 +584,7 @@ NLF_booth <-
 booteval.relimp(NLF_booth) # print result
 plot(booteval.relimp(NLF_booth, sort = TRUE)) # plot result
 
+par(mfrow=c(2,1))
 
 # Normality of Residuals
 # qq plot for studentized resid

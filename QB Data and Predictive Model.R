@@ -27,9 +27,11 @@ par(mfrow=c(1,1))
 
 # Subsetting data into 2 different position groups QB and WR
 
+# Packages:
+
 library(readxl)
 OffNFLSalary <-
-  read_excel("School/DA 485/NFLSalaryOff.xlsx",
+  read_excel("School/DA 485/NFLPlayerSalaryData.xlsx",
              sheet = "2017OffensivePlayerSalary_New")
 View(OffNFLSalary)
 
@@ -39,133 +41,125 @@ OffNFLSalary = data.frame(OffNFLSalary)
 attach(OffNFLSalary)
 summary(OffNFLSalary)
 
+View(Norm_OFF_Salary)
+
 # Cbind new normalized da
 
 # New Correlation Matrix with Normalized data
 
-nl_td[is.infinite(nl_td)] = 0
-INT[is.infinite(INT)] = 0
-nl_fum[is.infinite(nl_fum)] = 0
-
-Norm_OFF_Salary = data.frame(
+NFLOffSalary = data.frame(
   cbind(
-    Rank,
+    sqrank,
     POS,
-    log10_salary,
-    sq_gp,
-    sq_gs,
-    sq_snaps,
-    sq_snaps_per,
-    nl_plays,
-    nl_plays_comp,
-    Comp_Percent,
-    YDS,
+    sqsalary,
+    GP,
+    GS,
+    sqsnaps,
+    sqsnapsper,
+    nlatt,
+    nlattcom,
+    nlcompPer,
+    nlyds,
     YDS.ATT,
-    nl_td,
-    INT,
-    nl_fum
+    nltd,
+    nlint,
+    nlfum
   )
 )
+head(NFLOffSalary)
 
-head(Norm_OFF_Salary)
-Norm_OFF_Salary = data.frame(Norm_OFF_Salary)
-attach(Norm_OFF_Salary)
-summary(Norm_OFF_Salary)
+# removed NA value column
 
+nlatt[is.infinite(nlatt)] = 0
+nlattcom[is.infinite(nlattcom)] = 0
+nlcompPer[is.infinite(nlcompPer)] = 0
+nlyds[is.infinite(nlyds)] = 0
+nltd[is.infinite(nltd)] = 0
+nlint[is.infinite(nlint)] = 0
+nlfum[is.infinite(nlfum)] = 0
+
+nlatt[is.na(nlatt)] = 0
+nlattcom[is.na(nlattcom)] = 0
+nlcompPer[is.infinite(nlcompPer)] = 0
+nlyds[is.na(nlyds)] = 0
+nltd[is.na(nltd)] = 0
+nlint[is.na(nlint)] = 0
+nlfum[is.na(nlfum)] = 0
+
+head(NFLOffSalary)
+NFLOffSalary = data.frame(NFLOffSalary)
+attach(NFLOffSalary)
+summary(NFLOffSalary)
 
 ## creating  table with POS variables so I will be able to subset by Position
-attach(NFLOffSalary)
-
-sink(
-  "School/DA 485/NewNFLData.txt",
-  type = "output",
-  append = FALSE,
-  split = TRUE
-)
-
-nl_td[is.infinite(nl_td)] = 0
-INT[is.infinite(INT)] = 0
-nl_fum[is.infinite(nl_fum)] = 0
-Norm_OFF_Salary[is.na(Norm_OFF_Salary)] = 0
-
-NewNFLData = data.frame(Norm_OFF_Salary)
-print(head(NewNFLData))
-sink()
-View(NewNFLData)
-
-# attaching table and checking summary stats
-
-sink(
-  "School/DA 485/NewNFLData.txt",
-  type = "output",
-  append = FALSE,
-  split = TRUE
-)
-
-NewNFLData = data.frame(NewNFLData)
-attach(NewNFLData)
-print(head(NewNFLData))
-print(summary(NewNFLData))
-print(names(NewNFLData))
-sink()
 
 ## subsetting QB postion from new data table based upon POS varaible
 
-QB_Data<- subset(NewNFLData, POS == 'QB')
-QB_Data = QB_Data[, 2:15]
+QB_Data<- subset(NFLOffSalary, POS == 'QB')
+View(QB_Data)
 QB_Data = data.frame(QB_Data)
 head(QB_Data)
-
-QB_Data[is.infinite(QB_Data)] = 0
-INT[is.infinite(INT)] = 0
-nl_fum[is.infinite(nl_fum)] = 0
-QB_Data[is.na(QB_Data)] = 0
-
-QBScatterplot = scatterplotMatrix(
-  ~ log10_salary + sq_gp + sq_gs + sq_snaps + sq_snaps_per +
-    nl_plays + nl_plays_comp +
-    Comp_Percent + YDS + YDS.ATT + nl_td + INT + nl_fum, sq_rank,
-  data = QB_Data,
-  main = "QB Offensive Salary"
-)
+attach(QB_Data)
 
 
+# Scatterplot / Correlation Matrices from the car Package
 
-# Cor Matix
+corQB_Data = cor(data.frame(QB_Data[sapply(QB_Data, is.numeric)]))
+corQB_Data
+chart.Correlation(sq, histogram = TRUE, pch = 19)
+
+
+# Setting up lm for initial modeling
+## linear models are fit using the lm( ) function. The form of the lm function is
+###lm(formula, family=familytype(link=linkfunction), data=)
+
+
+# Regression Tree with library(rpart)
+# used this information with matrix plot to build initial model
 
 sink(
-  "School/DA 485/QB_Data_corr.txt",
+  "School/DA 485/QB regression Tree.txt",
   type = "output",
   append = FALSE,
   split = TRUE
 )
-# New Correlation Matrix with Normalized data
 
-QB_Data[is.infinite(QB_Data)] = 0
-INT[is.infinite(INT)] = 0
-nl_fum[is.infinite(nl_fum)] = 0
-QB_Data[is.na(QB_Data)] = 0
-INT[is.na(INT)] = 0
-nl_fum[is.na(nl_fum)] = 0
-  
-
-#convert data set from factor to numeric
-QB_Data[is.na(QB_Data)] = 0
-QB_Data = data.matrix(QB_Data)
-QB_Data = data.frame(QB_Data)
+# grow tree
 names(QB_Data)
+treefit <-
+  rpart(
+    sqsalary ~ sqrank + GP + GS + sqsnaps + sqsnapsper + nlatt +nlattcom+
+      nlcompPer + nlyds + YDS.ATT + nltd + nlint + nlfum ,
+    method = "anova",
+    data = QB_Data
+  )
 
-## Correlation Matrix
+print(printcp(QBtreefit)) # display the results
+print(plotcp(QBtreefit)) # visualize cross-validation results
+print(summary(QBtreefit)) # detailed summary of split
+sink()
 
-QB_Data[is.na(QB_Data)] = 0
-QB_Data = data.frame(QB_Data)
+# create additional plots
+par(mfrow = c(1, 2)) # two plots on one page
+rsq.rpart(QBtreefit) # visualize cross-validation results
 
-chart.Correlation(QB_Data, histogram = TRUE, pch = 19)
+# plot tree
+par(mfrow = c(1, 1))
+
+plot(QBtreefit, uniform = TRUE,
+     main = "Regression Tree for QB NFL Salary ")
+text(QBtreefit,
+     use.n = TRUE,
+     all = TRUE,
+     cex = .8)
 
 # Fitting new LM model for QB
+names(QB_Data)
 View(QB_Data)
 
-# Creating my GLM & LM Model
+QB_Data = data.matrix(QB_Data)
+QB_Data = data.frame(QB_Data)
+# Creating my LM Model using the tree and matrix plot info
 
 sink(
   "School/DA 485/GLM&LM_QB_FitMod.txt",
@@ -174,21 +168,20 @@ sink(
   split = TRUE
 )
 
-FitGLM_mod_QB = glm(
-  log10_salary ~ sq_snaps + nl_plays + nl_plays_comp +
-    Comp_Percent + YDS + YDS.ATT + nl_td + INT + nl_fum,
+FitLM_mod_QB = lm(sqsalary ~ GP+GS+nlatt+nlattcom+nlcompPer+nltd+nlyds+YDS.ATT,
   data = QB_Data
 )
-
-FitLM_mod_QB = lm(
-  log10_salary ~ sq_snaps+nl_plays + nl_plays_comp +
-    Comp_Percent + YDS + YDS.ATT + nl_td + INT + nl_fum,
-  data = QB_Data
-)
-print(summary(FitGLM_mod_QB))
 print(summary(FitLM_mod_QB))
 
 sink()
+
+coefficients(FitLM_mod_QB) # model coefficients
+confint(FitLM_mod_QB, level=0.95) # CIs for model parameters
+fitted(FitLM_mod_QB) # predicted values
+residuals(FitLM_mod_QB) # residuals
+anova(FitLM_mod_QB) # anova table
+vcov(FitLM_mod_QB) # covariance matrix for model parameters
+influence(FitLM_mod_QB) # regression diagnostic
 
 #Stepwise Variable selection
 
@@ -198,11 +191,6 @@ sink(
   append = FALSE,
   split = TRUE
 )
-
-
-# Stepwise Regression AIC GLM
-print(QBStepAIC_GLM <- stepAIC(FitGLM_mod_QB, direction = "both"))
-print(QBStepAIC_GLM$anova) # display results
 
 # Stepwise Regression AIC LMM
 print(QBStep_LM <- stepAIC(FitLM_mod_QB, direction = "both"))
@@ -221,8 +209,7 @@ sink(
 QB_Data[is.na(QB_Data)] = 0
 
 
-QB_mod2_fit = lm(log10_salary ~ sq_snaps + nl_plays + Comp_Percent + YDS+
-                    nl_td, data = QB_Data)
+QB_mod2_fit = lm(sqsalary ~ nlatt + nlattcom + nlcompPer + nltd + nlyds, data = QB_Data)
 
 QB_Data[is.na(QB_Data)] = 0
 
@@ -239,90 +226,53 @@ print(influence(QB_mod2_fit)) # regression diagnostics
 print(cv.lm(QB_Data, QB_mod2_fit, 3)) # K-fold cross-validation with 3 folds
 sink()
 
-# Relative Variable Importance
+# diagnostic plots
+
+layout(matrix(c(1, 2, 3, 4), 2, 2)) # optional 4 graphs/page
+plot(QB_mod2_fit)
+
+
+# Bootstrap Measures of Relative Importance (100 samples)
+# library(relaimpo)
 
 sink(
-  "School/DA 485/Relative Variable Importance.txt",
+  "School/DA 485/QB Bootstrap Measures of Relative Importance.txtf",
   type = "output",
   append = FALSE,
   split = TRUE
 )
 
 # Calculate Relative Importance for Each Predictor
-print(calc.relimp(QB_mod2_fit,
-                  type = c("lmg", "last", "first", "pratt"),
-                  rela = TRUE))
-sink()
-
-# Bootstrap Measures of Relative Importance (100 samples)
-
-sink(
-  "School/DA 485/Bootstrap Measures of Relative Importance.txtf",
-  type = "output",
-  append = FALSE,
-  split = TRUE
-)
-
-
-boot_QB <- boot.relimp(
+#library(relaimpo)
+calc.relimp(
   QB_mod2_fit,
-  type = c("lmg","last", "first", "pratt"),
-  
-  rank = TRUE,
-  diff = TRUE,
+  type = c("lmg", "last", "first", "pratt"),
   rela = TRUE
 )
 
-print(booteval.relimp(boot_QB)) # print result
-print(plot(booteval.relimp(boot_QB, sort = TRUE))) # plot result
-sink()
+# Bootstrap Measures of Relative Importance (1000 samples)
+QB_booth <-
+  boot.relimp(
+    QB_mod2_fit,
+    b = 1000,
+    type = c("lmg",
+             "last", "first", "pratt"),
+    rank = TRUE,
+    diff = TRUE,
+    rela = TRUE
+  )
+booteval.relimp(QB_booth) # print result
+plot(booteval.relimp(QB_booth, sort = TRUE)) # plot result
 
-# diagnostic plots 
-
-sink(
-  "School/DA 485/diagnostic plots.txt",
-  type = "output",
-  append = FALSE,
-  split = TRUE
-)
-
-layout(matrix(c(1,2,3,4),2,2)) # optional 4 graphs/page
-plot(QB_mod2_fit)
-
-
-# Creating Predictive Model for QB Salary
-## Resorting Data
-print(QB_mod2_fit)
-head(QB_Data)
-
-pred_QB <-
-  QB_Data[c(
-            "sq_snaps",
-            "nl_plays",
-            "nl_plays_comp",
-            "nl_td",
-            "log10_salary")]
-
-
-
-pred_QB[is.na(pred_QB)] = 0
-attach(pred_QB)
-
-
-# define an 70%/30% train/test split of the dataset
-set.seed(12345)
-split=0.70
-QB_train <- createDataPartition(pred_QB$log10_salary, p=split, list = FALSE)
-QB_Data_train <- pred_QB[ QB_train,]
-QB_Data_test <- pred_QB[-QB_train,]
-# train a naive bayes model
-model <- NaiveBayes(log10_salary~ ., data=QB_Data_train)
-# make predictions
-QB_x_test <- pred_QB[,1:4]
-QB_y_test <- pred_QB[,5]
-predictions <- predict(model, QB_x_test)
-# summarize results
-confusionMatrix(predictions$class, QB_y_test)
-
-
-
+par(mfrow=c(1,1))
+# Normality of Residuals
+# qq plot for studentized resid
+qqPlot(QB_mod2_fit, main = "QQ Plot")
+# distribution of studentized residuals
+library(MASS)
+sresid <- studres(QB_mod2_fit)
+hist(sresid, freq = FALSE,
+     main = "Distribution of NFL Offensive Salary")
+xfit <- seq(min(sresid), max(sresid), length = 40)
+yfit <- dnorm(xfit)
+lines(xfit, yfit)
