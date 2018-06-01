@@ -6,19 +6,16 @@ library(MASS)
 library(car)
 library(lattice)
 library("PerformanceAnalytics")
-library(mclust)
+#library(mclust)
 library(DAAG) # K-fold cross-validation
 #install.packages("naivebayes")
-library(naivebayes)
 library(car)
-library(lattice)
 #install.packages("PerformanceAnalytics")
 library("PerformanceAnalytics")
-library(MASS)
-library(cluster)
-library(fpc)
 #install.packages("ResourceSelection") # enable Hosmer and Lemeshow goodness of fit (GOF) test
 library(ResourceSelection)
+library(rpart)
+library(ggplot2)
 
 # Imported dataset from excel#
 
@@ -355,10 +352,36 @@ par(mfrow = c(1, 1))
 
 # New Correlation Matrix with Normalized data
 
+# removed NA value column
+
+nlatt[is.infinite(nlatt)] = 0
+nlattcom[is.infinite(nlattcom)] = 0
+nlcompPer[is.infinite(nlcompPer)] = 0
+nlyds[is.infinite(nlyds)] = 0
+nltd[is.infinite(nltd)] = 0
+nlint[is.infinite(nlint)] = 0
+nlfum[is.infinite(nlfum)] = 0
+
+nlatt[is.na(nlatt)] = 0
+nlattcom[is.na(nlattcom)] = 0
+nlcompPer[is.infinite(nlcompPer)] = 0
+nlyds[is.na(nlyds)] = 0
+nltd[is.na(nltd)] = 0
+nlint[is.na(nlint)] = 0
+nlfum[is.na(nlfum)] = 0
+
+nlatt[is.nan(nlatt)] = 0
+nlattcom[is.nan(nlattcom)] = 0
+nlcompPer[is.nan(nlcompPer)] = 0
+nlyds[is.nan(nlyds)] = 0
+nltd[is.nan(nltd)] = 0
+nlint[is.nan(nlint)] = 0
+nlfum[is.nan(nlfum)] = 0
+
 Norm_OFF_Salary = data.frame(
   cbind(
     sqrank,
-    POS,
+    
     sqsalary,
     GP,
     GS,
@@ -392,6 +415,14 @@ nlyds[is.na(nlyds)] = 0
 nltd[is.na(nltd)] = 0
 nlint[is.na(nlint)] = 0
 nlfum[is.na(nlfum)] = 0
+
+nlatt[is.nan(nlatt)] = 0
+nlattcom[is.nan(nlattcom)] = 0
+nlcompPer[is.nan(nlcompPer)] = 0
+nlyds[is.nan(nlyds)] = 0
+nltd[is.nan(nltd)] = 0
+nlint[is.nan(nlint)] = 0
+nlfum[is.nan(nlfum)] = 0
 
 head(Norm_OFF_Salary)
 Norm_OFF_Salary = data.frame(Norm_OFF_Salary)
@@ -450,9 +481,9 @@ rsq.rpart(treefit) # visualize cross-validation results
 # plot tree
 par(mfrow = c(1, 1))
 
-plot(fit, uniform = TRUE,
+plot(treefit, uniform = TRUE,
      main = "Regression Tree for Offensive NFL Salary ")
-text(fit,
+text(treefit,
      use.n = TRUE,
      all = TRUE,
      cex = .8)
@@ -549,7 +580,7 @@ sink()
 # diagnostic plots
 
 layout(matrix(c(1, 2, 3, 4), 2, 2)) # optional 4 graphs/page
-plot(fit2_Off_NFL_Salary)
+plot(model3)
 
 
 # Bootstrap Measures of Relative Importance (100 samples)
@@ -565,7 +596,7 @@ sink(
 # Calculate Relative Importance for Each Predictor
 library(relaimpo)
 calc.relimp(
-  fit2_Off_NFL_Salary,
+  model3,
   type = c("lmg", "last", "first", "pratt"),
   rela = TRUE
 )
@@ -573,7 +604,7 @@ calc.relimp(
 # Bootstrap Measures of Relative Importance (1000 samples)
 NLF_booth <-
   boot.relimp(
-    fit2_Off_NFL_Salary,
+    model3,
     b = 1000,
     type = c("lmg",
              "last", "first", "pratt"),
@@ -588,12 +619,84 @@ par(mfrow=c(2,1))
 
 # Normality of Residuals
 # qq plot for studentized resid
-qqPlot(fit2_Off_NFL_Salary, main = "QQ Plot")
+qqPlot(model3, main = "QQ Plot")
 # distribution of studentized residuals
 library(MASS)
-sresid <- studres(fit2_Off_NFL_Salary)
+sresid <- studres(model3)
 hist(sresid, freq = FALSE,
      main = "Distribution of NFL Offensive Salary")
 xfit <- seq(min(sresid), max(sresid), length = 40)
 yfit <- dnorm(xfit)
 lines(xfit, yfit)
+
+
+## OUTLIERS
+# Assessing Outliers
+#library(car)
+outlierTest(fit2_Off_NFL_Salary) # Bonferonni p-value for most extreme obs
+qqPlot(fit2_Off_NFL_Salary, main="QQ Plot") #qq plot for studentized resid
+leveragePlots(fit2_Off_NFL_Salary) # leverage plot
+
+
+
+##OUTLIERS
+# Influential Observations
+par(mfrow = c(1, 1))
+# added variable plots
+av.Plots(fit2_Off_NFL_Salary)
+# Cook's D plot
+# identify D values > 4/(n-k-1)
+cutoff <- 4 / ((nrow(fit2_Off_NFL_Salary) - length(fit2_Off_NFL_Salary$coefficients) - 2))
+plot(fit2_Off_NFL_Salary, which = 4, cook.levels = cutoff)
+# Influence Plot
+influencePlot(fit2_Off_NFL_Salary,
+              id.method = "identify",
+              main = "Influence Plot",
+              sub = "Circle size is proportial to Cook's Distance")
+
+# Removing outlier
+outlierdata <-Norm_OFF_Salary[-c(6,7,13, 15, 16,21,22,31,41,46,64,211,214,225, 247,376,377,400,408,454,466), ]
+
+model3 <- lm(formula = sqsalary ~ GS + nlattcom + nltd,
+             data = outlierdata)
+summary(model3)
+
+##OUTLIERS
+# Influential Observations
+par(mfrow = c(1, 1))
+# added variable plots
+av.Plots(model3)
+# Cook's D plot
+# identify D values > 4/(n-k-1)
+cutoff <- 4 / ((nrow(model3) - length(model3$coefficients) - 2))
+plot(model3, which = 4, cook.levels = cutoff)
+# Influence Plot
+influencePlot(model3,
+              id.method = "identify",
+              main = "Influence Plot",
+              sub = "Circle size is proportial to Cook's Distance")
+
+
+# Evaluate Collinearity
+vif(model3) # variance inflation factors
+sqrt(vif(model3)) > 2 # problem?
+
+install.packages("gvlma")
+library(gvlma)
+gvlma(model3)
+
+
+viflm = lm(sqsalary ~ sqrank + GP + GS +  
+             nlcompPer +  YDS.ATT + nltd + nlint + nlfum ,
+           data = Norm_OFF_Salary)
+vif(viflm)
+
+
+summary(viflm)
+
+stepAIC(viflm)
+
+viflm2 = lm(formula = sqsalary ~ sqrank + GS + nltd + nlint, data = Norm_OFF_Salary)
+
+
+summary(viflm2)

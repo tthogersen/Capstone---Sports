@@ -7,23 +7,23 @@ library(DAAG)
 library(relaimpo) #- used to for relative importacelibrary(car)
 library(Hmisc) #for rcorr function
 library(MASS)
-library(PerformanceAnalytics)
-library(rsample)  # data splitting 
+library(rsample)  # data splitting
 library(dplyr)    # data transformation
 library(ggplot2)  # data visualization
 library(caret)    # implementing with caret
 library(h2o)      # implementing with h2o
-library(ggplot2)
 library(cluster)
 library(fpc)
 library(MASS)
 library(car)
 library(lattice)
-library("PerformanceAnalytics")
+library(PerformanceAnalytics)
 library(lars)
 library(arm)
+library(rpart)
+library(openxlsx)
 
-par(mfrow=c(1,1))
+par(mfrow = c(1, 1))
 
 # Subsetting data into 2 different position groups QB and WR
 
@@ -95,8 +95,11 @@ summary(NFLOffSalary)
 
 ## subsetting QB postion from new data table based upon POS varaible
 
-QB_Data<- subset(NFLOffSalary, POS == 'QB')
+QB_Data <- subset(NFLOffSalary, V2 == 'QB')
+QB_Data <- QB_Data[c(-2)]
+
 View(QB_Data)
+QB_Data = data.matrix(QB_Data)
 QB_Data = data.frame(QB_Data)
 head(QB_Data)
 attach(QB_Data)
@@ -107,6 +110,8 @@ attach(QB_Data)
 corQB_Data = cor(data.frame(QB_Data[sapply(QB_Data, is.numeric)]))
 corQB_Data
 chart.Correlation(sq, histogram = TRUE, pch = 19)
+
+POS[is.na(POS)] = 0
 
 
 # Setting up lm for initial modeling
@@ -126,10 +131,10 @@ sink(
 
 # grow tree
 names(QB_Data)
-treefit <-
+QBtreefit <-
   rpart(
-    sqsalary ~ sqrank + GP + GS + sqsnaps + sqsnapsper + nlatt +nlattcom+
-      nlcompPer + nlyds + YDS.ATT + nltd + nlint + nlfum ,
+    sqsalary ~ sqrank + GP + GS + sqsnaps + sqsnapsper + nlatt + nlattcom +
+      nlcompPer + nlyds +  nltd + nlint + nlfum ,
     method = "anova",
     data = QB_Data
   )
@@ -168,20 +173,21 @@ sink(
   split = TRUE
 )
 
-FitLM_mod_QB = lm(sqsalary ~ GP+GS+nlatt+nlattcom+nlcompPer+nltd+nlyds+YDS.ATT,
-  data = QB_Data
-)
-print(summary(FitLM_mod_QB))
+
+QBmod1 = lm(
+  sqsalary ~  GS  + nlatt + nlcompPer+nltd+ sqsnapsper,
+  data = QB_Data)
+print(summary(QBmod1))
 
 sink()
 
-coefficients(FitLM_mod_QB) # model coefficients
-confint(FitLM_mod_QB, level=0.95) # CIs for model parameters
-fitted(FitLM_mod_QB) # predicted values
-residuals(FitLM_mod_QB) # residuals
-anova(FitLM_mod_QB) # anova table
-vcov(FitLM_mod_QB) # covariance matrix for model parameters
-influence(FitLM_mod_QB) # regression diagnostic
+coefficients(QBmod1) # model coefficients
+confint(QBmod1, level = 0.95) # CIs for model parameters
+fitted(QBmod1) # predicted values
+residuals(QBmod1) # residuals
+anova(QBmod1) # anova table
+vcov(QBmod1) # covariance matrix for model parameters
+influence(QBmod1) # regression diagnostic
 
 #Stepwise Variable selection
 
@@ -193,11 +199,11 @@ sink(
 )
 
 # Stepwise Regression AIC LMM
-print(QBStep_LM <- stepAIC(FitLM_mod_QB, direction = "both"))
+print(QBStep_LM <- stepAIC(QBmod1, direction = "both"))
 print(QBStep_LM$anova) # display results
 sink()
 
-#Final Model after stepwise selection
+# Model 2 after stepwise selection
 
 sink(
   "School/DA 485/FinalModelResults.txt",
@@ -209,27 +215,30 @@ sink(
 QB_Data[is.na(QB_Data)] = 0
 
 
-QB_mod2_fit = lm(sqsalary ~ nlatt + nlattcom + nlcompPer + nltd + nlyds, data = QB_Data)
+QBmod2 = lm(formula = sqsalary ~ nltd, data = QB_Data)
 
 QB_Data[is.na(QB_Data)] = 0
 
+#Model 3 - after removing outliers
+
+QBmod3 = lm(formula = sqsalary ~ nltd, data = QBOutlier)
 
 
-print(summary(QB_mod2_fit)) # Show summary results
-print(coefficients(QB_mod2_fit)) # model coefficients
-print(confint(QB_mod2_fit, level = 0.95))# CIs for model parameters
-print(fitted(QB_mod2_fit)) # predicted values
-print(residuals(QB_mod2_fit))# residuals
-print(anova(QB_mod2_fit))# anova table
-print(vcov(QB_mod2_fit)) # covariance matrix for model parameters
-print(influence(QB_mod2_fit)) # regression diagnostics
-print(cv.lm(QB_Data, QB_mod2_fit, 3)) # K-fold cross-validation with 3 folds
+print(summary(QBmod3)) # Show summary results
+print(coefficients(QBmod3)) # model coefficients
+print(confint(QBmod3, level = 0.95))# CIs for model parameters
+print(fitted(QBmod3)) # predicted values
+print(residuals(QBmod3))# residuals
+print(anova(QBmod3))# anova table
+print(vcov(QBmod3)) # covariance matrix for model parameters
+print(influence(QBmod3)) # regression diagnostics
+print(cv.lm(QBOutlier, QBmod3, 3)) # K-fold cross-validation with 3 folds
 sink()
 
 # diagnostic plots
 
 layout(matrix(c(1, 2, 3, 4), 2, 2)) # optional 4 graphs/page
-plot(QB_mod2_fit)
+plot(QBmod3)
 
 
 # Bootstrap Measures of Relative Importance (100 samples)
@@ -244,16 +253,14 @@ sink(
 
 # Calculate Relative Importance for Each Predictor
 #library(relaimpo)
-calc.relimp(
-  QB_mod2_fit,
-  type = c("lmg", "last", "first", "pratt"),
-  rela = TRUE
-)
+calc.relimp(QBmod3,
+            type = c("lmg", "last", "first", "pratt"),
+            rela = TRUE)
 
 # Bootstrap Measures of Relative Importance (1000 samples)
 QB_booth <-
   boot.relimp(
-    QB_mod2_fit,
+    QBmod3,
     b = 1000,
     type = c("lmg",
              "last", "first", "pratt"),
@@ -264,15 +271,73 @@ QB_booth <-
 booteval.relimp(QB_booth) # print result
 plot(booteval.relimp(QB_booth, sort = TRUE)) # plot result
 
-par(mfrow=c(1,1))
+par(mfrow = c(1, 1))
 # Normality of Residuals
 # qq plot for studentized resid
-qqPlot(QB_mod2_fit, main = "QQ Plot")
+qqPlot(QBmod3, main = "QQ Plot")
 # distribution of studentized residuals
 library(MASS)
-sresid <- studres(QB_mod2_fit)
+sresid <- studres(QBmod3)
 hist(sresid, freq = FALSE,
      main = "Distribution of NFL Offensive Salary")
 xfit <- seq(min(sresid), max(sresid), length = 40)
 yfit <- dnorm(xfit)
 lines(xfit, yfit)
+
+## OUTLIERS
+# Assessing Outliers
+#library(car)
+outlierTest(QBmod3) # Bonferonni p-value for most extreme obs
+qqPlot(QBmod3, main = "QQ Plot") #qq plot for studentized resid
+leveragePlots(QBmod3) # leverage plot
+
+
+
+##OUTLIERS
+# Influential Observations
+par(mfrow = c(1, 1))
+# added variable plots
+av.Plots(QBmod2)
+# Cook's D plot
+# identify D values > 4/(n-k-1)
+cutoff <- 4 / ((nrow(QBmod2) - length(QBmod2$coefficients) - 2))
+plot(QBmod2, which = 4, cook.levels = cutoff)
+# Influence Plot
+influencePlot(QBmod2,
+              id.method = "identify",
+              main = "Influence Plot",
+              sub = "Circle size is proportial to Cook's Distance")
+
+# Removing outlier
+## re-do this until no more improvement
+QBOutlier <- QB_Data[-c(9, 16, 19,46 ), ]
+
+QBmod3 = lm(formula = sqsalary ~ nltd, data = QBOutlier)
+summary(QBmod3)
+
+library(car)
+install.packages("car")
+
+##OUTLIERS
+# Influential Observations
+par(mfrow = c(1, 1))
+# added variable plots
+av.Plots(QBmod3)
+# Cook's D plot
+# identify D values > 4/(n-k-1)
+cutoff <- 4 / ((nrow(QBmod3) - length(QBmod3$coefficients) - 2))
+plot(QBmod3, which = 4, cook.levels = cutoff)
+# Influence Plot
+influencePlot(QBmod3,
+              id.method = "identify",
+              main = "Influence Plot",
+              sub = "Circle size is proportial to Cook's Distance")
+
+
+##Multi-collinearity
+
+# Evaluate Collinearity
+vif(QBmod3) # variance inflation factors
+sqrt(vif(QBmod3)) > 2 # problem?
+
+
